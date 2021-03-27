@@ -1,2 +1,3 @@
 *.olean
+/.vscode/cspell.json
 /leanpkg.path
