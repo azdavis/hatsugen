@@ -49,7 +49,7 @@ theorem preservation
   : has_typ e' t :=
 begin
   induction stepping,
-  let inv := (inversion_succ stepping_e t typing),
+  let inv := inversion_succ stepping_e t typing,
   let left := inv.left,
   rewrite inv.right at *,
   apply has_typ.succ stepping_e',
