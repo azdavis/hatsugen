@@ -1,5 +1,7 @@
 -- The E programming language.
 
+-- definitions
+
 inductive exp: Type
 | zero: exp
 | succ: exp -> exp
@@ -25,6 +27,8 @@ inductive val: exp -> Prop
 inductive steps: exp -> exp -> Prop
 | succ (e: exp) (e': exp): steps e e' -> steps (exp.succ e) (exp.succ e')
 
+-- helper theorems
+
 theorem inversion_succ
   (e: exp) (t: typ)
   (typing: has_typ (exp.succ e) t)
@@ -35,6 +39,8 @@ begin
   exact typing_a,
   refl,
 end
+
+-- preservation
 
 theorem preservation
   (e: exp) (e': exp) (t: typ)
@@ -49,6 +55,8 @@ begin
   apply has_typ.succ stepping_e',
   exact stepping_ih left,
 end
+
+-- progress
 
 theorem progress
   (e: exp) (t: typ)
