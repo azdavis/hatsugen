@@ -16,6 +16,15 @@ inductive has_typ: exp -> typ -> Prop
 | true: has_typ exp.true typ.bool
 | false: has_typ exp.false typ.bool
 
+inductive val: exp -> Prop
+| zero: val exp.zero
+| succ (e: exp): val e -> val (exp.succ e)
+| true: val exp.true
+| false: val exp.false
+
+inductive steps: exp -> exp -> Prop
+| succ (e: exp) (e': exp): steps e e' -> steps (exp.succ e) (exp.succ e')
+
 theorem inversion_succ
   (e: exp) (t: typ)
   (typing: has_typ (exp.succ e) t)
@@ -26,15 +35,6 @@ begin
   exact typing_a,
   refl,
 end
-
-inductive val: exp -> Prop
-| zero: val exp.zero
-| succ (e: exp): val e -> val (exp.succ e)
-| true: val exp.true
-| false: val exp.false
-
-inductive steps: exp -> exp -> Prop
-| succ (e: exp) (e': exp): steps e e' -> steps (exp.succ e) (exp.succ e')
 
 theorem preservation
   (e: exp) (e': exp) (t: typ)
