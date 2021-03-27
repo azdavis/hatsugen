@@ -1,5 +1,6 @@
 {
-	"files.exclude": {
-		"leanpkg.path": true
-	}
+  "files.exclude": {
+    "**/*.olean": true,
+    "leanpkg.path": true
+  }
 }
