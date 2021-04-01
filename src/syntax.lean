@@ -1,10 +1,9 @@
 inductive exp: Type
-| zero: exp
-| succ: exp -> exp
+| int: ℤ -> exp
 | true: exp
 | false: exp
 | if_: exp -> exp -> exp -> exp
 
 inductive typ: Type
-| nat: typ
+| int: typ
 | bool: typ

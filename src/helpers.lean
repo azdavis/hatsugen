@@ -1,16 +1,5 @@
-import e.statics
-import e.dynamics
-
-theorem inversion_succ
-  (e: exp) (t: typ)
-  (typing: has_typ (exp.succ e) t)
-  : has_typ e t ∧ t = typ.nat :=
-begin
-  cases typing,
-  split,
-  exact typing_a,
-  refl,
-end
+import statics
+import dynamics
 
 theorem inversion_if_cond
   (cond: exp) (yes: exp) (no: exp) (t: typ)

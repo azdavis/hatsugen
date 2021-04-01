@@ -1,13 +1,11 @@
-import e.syntax
+import syntax
 
 inductive val: exp -> Prop
-| zero: val exp.zero
-| succ (e: exp): val e -> val (exp.succ e)
+| int (n: ℤ): val (exp.int n)
 | true: val exp.true
 | false: val exp.false
 
 inductive steps: exp -> exp -> Prop
-| succ (e: exp) (e': exp): steps e e' -> steps (exp.succ e) (exp.succ e')
 | if_cond
     (cond: exp) (cond': exp) (yes: exp) (no: exp):
     steps cond cond' ->

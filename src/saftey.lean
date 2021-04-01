@@ -1,4 +1,4 @@
-import e.helpers
+import helpers
 
 theorem preservation
   (e: exp) (e': exp) (t: typ)
@@ -7,11 +7,6 @@ theorem preservation
   : has_typ e' t :=
 begin
   induction stepping generalizing t,
-  let inv := inversion_succ stepping_e t typing,
-  let left := inv.left,
-  rewrite inv.right at *,
-  apply has_typ.succ stepping_e',
-  exact stepping_ih typ.nat left,
   let inv := inversion_if_cond stepping_cond stepping_yes stepping_no t typing,
   apply has_typ.if_ stepping_cond' stepping_yes stepping_no t,
   exact stepping_ih typ.bool inv,
@@ -28,14 +23,7 @@ theorem progress
 begin
   induction typing,
   left,
-  exact val.zero,
-  cases typing_ih,
-  left,
-  exact val.succ typing_e typing_ih,
-  right,
-  cases typing_ih,
-  existsi exp.succ typing_ih_w,
-  exact steps.succ typing_e typing_ih_w typing_ih_h,
+  exact (val.int typing),
   left,
   exact val.true,
   left,

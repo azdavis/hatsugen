@@ -1,8 +1,7 @@
-import e.syntax
+import syntax
 
 inductive has_typ: exp -> typ -> Prop
-| zero: has_typ exp.zero typ.nat
-| succ (e: exp): has_typ e typ.nat -> has_typ (exp.succ e) typ.nat
+| int (n: ℤ): has_typ (exp.int n) typ.int
 | true: has_typ exp.true typ.bool
 | false: has_typ exp.false typ.bool
 | if_
