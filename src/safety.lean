@@ -7,9 +7,8 @@ theorem preservation
   : has_typ e' t :=
 begin
   induction stepping generalizing t,
-  let inv := inversion_if_cond stepping_cond stepping_yes stepping_no t typing,
   apply has_typ.if_ stepping_cond' stepping_yes stepping_no t,
-  exact stepping_ih typ.bool inv,
+  exact stepping_ih typ.bool (inversion_if_cond stepping_cond stepping_yes stepping_no t typing),
   exact inversion_if_yes stepping_cond stepping_yes stepping_no t typing,
   exact inversion_if_no stepping_cond stepping_yes stepping_no t typing,
   exact inversion_if_yes exp.true stepping_yes stepping_no t typing,
