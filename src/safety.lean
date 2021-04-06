@@ -1,8 +1,8 @@
 import helpers
 
 theorem progress
-  (e: exp) (t: typ)
-  (typing: has_typ e t)
+  (e: exp) (τ: typ)
+  (typing: has_typ e τ)
   : val e ∨ (∃ (e': exp), steps e e') :=
 begin
   induction typing,
@@ -27,16 +27,16 @@ begin
 end
 
 theorem preservation
-  (e: exp) (e': exp) (t: typ)
-  (typing: has_typ e t)
+  (e: exp) (e': exp) (τ: typ)
+  (typing: has_typ e τ)
   (stepping: steps e e')
-  : has_typ e' t :=
+  : has_typ e' τ :=
 begin
-  induction stepping generalizing t,
-  apply has_typ.if_ stepping_e1' stepping_e2 stepping_e3 t,
-  exact stepping_ih typ.bool (inversion_if_e1 stepping_e1 stepping_e2 stepping_e3 t typing),
-  exact inversion_if_e2 stepping_e1 stepping_e2 stepping_e3 t typing,
-  exact inversion_if_e3 stepping_e1 stepping_e2 stepping_e3 t typing,
-  exact inversion_if_e2 exp.true stepping_e2 stepping_e3 t typing,
-  exact inversion_if_e3 exp.false stepping_e2 stepping_e3 t typing,
+  induction stepping generalizing τ,
+  apply has_typ.if_ stepping_e1' stepping_e2 stepping_e3 τ,
+  exact stepping_ih typ.bool (inversion_if_e1 stepping_e1 stepping_e2 stepping_e3 τ typing),
+  exact inversion_if_e2 stepping_e1 stepping_e2 stepping_e3 τ typing,
+  exact inversion_if_e3 stepping_e1 stepping_e2 stepping_e3 τ typing,
+  exact inversion_if_e2 exp.true stepping_e2 stepping_e3 τ typing,
+  exact inversion_if_e3 exp.false stepping_e2 stepping_e3 τ typing,
 end
