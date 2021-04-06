@@ -6,13 +6,13 @@ inductive val: exp -> Prop
 | false: val exp.false
 
 inductive steps: exp -> exp -> Prop
-| if_cond
-    (cond: exp) (cond': exp) (yes: exp) (no: exp):
-    steps cond cond' ->
-    steps (exp.if_ cond yes no) (exp.if_ cond' yes no)
-| if_yes
-    (yes: exp) (no: exp):
-    steps (exp.if_ exp.true yes no) yes
-| if_no
-    (yes: exp) (no: exp):
-    steps (exp.if_ exp.false yes no) no
+| if_e1
+    (e1: exp) (e1': exp) (e2: exp) (e3: exp):
+    steps e1 e1' ->
+    steps (exp.if_ e1 e2 e3) (exp.if_ e1' e2 e3)
+| if_e2
+    (e2: exp) (e3: exp):
+    steps (exp.if_ exp.true e2 e3) e2
+| if_e3
+    (e2: exp) (e3: exp):
+    steps (exp.if_ exp.false e2 e3) e3

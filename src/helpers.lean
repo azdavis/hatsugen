@@ -1,28 +1,28 @@
 import statics
 import dynamics
 
-theorem inversion_if_cond
-  (cond: exp) (yes: exp) (no: exp) (t: typ)
-  (typing: has_typ (exp.if_ cond yes no) t)
-  : has_typ cond typ.bool :=
+theorem inversion_if_e1
+  (e1: exp) (e2: exp) (e3: exp) (t: typ)
+  (typing: has_typ (exp.if_ e1 e2 e3) t)
+  : has_typ e1 typ.bool :=
 begin
   cases typing,
   exact typing_a,
 end
 
-theorem inversion_if_yes
-  (cond: exp) (yes: exp) (no: exp) (t: typ)
-  (typing: has_typ (exp.if_ cond yes no) t)
-  : has_typ yes t :=
+theorem inversion_if_e2
+  (e1: exp) (e2: exp) (e3: exp) (t: typ)
+  (typing: has_typ (exp.if_ e1 e2 e3) t)
+  : has_typ e2 t :=
 begin
   cases typing,
   exact typing_a_1,
 end
 
-theorem inversion_if_no
-  (cond: exp) (yes: exp) (no: exp) (t: typ)
-  (typing: has_typ (exp.if_ cond yes no) t)
-  : has_typ no t :=
+theorem inversion_if_e3
+  (e1: exp) (e2: exp) (e3: exp) (t: typ)
+  (typing: has_typ (exp.if_ e1 e2 e3) t)
+  : has_typ e3 t :=
 begin
   cases typing,
   exact typing_a_2,
