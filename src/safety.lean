@@ -7,7 +7,7 @@ theorem progress
 begin
   induction typing,
   left,
-  exact (val.int typing),
+  exact val.int typing,
   left,
   exact val.true,
   left,
@@ -33,10 +33,13 @@ theorem preservation
   : has_typ e' τ :=
 begin
   induction stepping generalizing τ,
+  let inv := inversion_if stepping_e1 stepping_e2 stepping_e3 τ typing,
   apply has_typ.if_ stepping_e1' stepping_e2 stepping_e3 τ,
-  exact stepping_ih typ.bool (inversion_if_e1 stepping_e1 stepping_e2 stepping_e3 τ typing),
-  exact inversion_if_e2 stepping_e1 stepping_e2 stepping_e3 τ typing,
-  exact inversion_if_e3 stepping_e1 stepping_e2 stepping_e3 τ typing,
-  exact inversion_if_e2 exp.true stepping_e2 stepping_e3 τ typing,
-  exact inversion_if_e3 exp.false stepping_e2 stepping_e3 τ typing,
+  exact stepping_ih typ.bool inv.left,
+  exact inv.right.left,
+  exact inv.right.right,
+  let inv := inversion_if exp.true stepping_e2 stepping_e3 τ typing,
+  exact inv.right.left,
+  let inv := inversion_if exp.false stepping_e2 stepping_e3 τ typing,
+  exact inv.right.right,
 end
