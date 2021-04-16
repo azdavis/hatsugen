@@ -1,6 +1,21 @@
 import statics
 import dynamics
 
+theorem lookup_same
+  (Γ: cx) (x: var) (τ: typ) (τ': typ)
+  (l1: lookup Γ x τ)
+  (l2: lookup Γ x τ')
+  : τ = τ' :=
+begin
+  induction l1,
+  cases l2,
+  refl,
+  contradiction,
+  cases l2,
+  contradiction,
+  exact l1_ih l2_a_1,
+end
+
 theorem inversion_if
   (Γ: cx) (e1: exp) (e2: exp) (e3: exp) (τ: typ)
   (typing: has_typ Γ (exp.if_ e1 e2 e3) τ)
