@@ -2,9 +2,9 @@ import statics
 import dynamics
 
 theorem inversion_if
-  (e1: exp) (e2: exp) (e3: exp) (τ: typ)
-  (typing: has_typ (exp.if_ e1 e2 e3) τ)
-  : has_typ e1 typ.bool ∧ has_typ e2 τ ∧ has_typ e3 τ :=
+  (Γ: cx) (e1: exp) (e2: exp) (e3: exp) (τ: typ)
+  (typing: has_typ Γ (exp.if_ e1 e2 e3) τ)
+  : has_typ Γ e1 typ.bool ∧ has_typ Γ e2 τ ∧ has_typ Γ e3 τ :=
 begin
   cases typing,
   split,
@@ -15,8 +15,8 @@ begin
 end
 
 theorem bool_canonical_forms
-  (e: exp)
-  (typing: has_typ e typ.bool)
+  (Γ: cx) (e: exp)
+  (typing: has_typ Γ e typ.bool)
   (value: val e)
   : e = exp.true ∨ e = exp.false :=
 begin
