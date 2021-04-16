@@ -1,3 +1,4 @@
+-- any infinite set would work
 def var: Type := string
 
 inductive typ: Type
