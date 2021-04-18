@@ -1,50 +1,47 @@
 import helpers
 
 -- seems like we have to write this as taking in a general context and also a
--- proof that it is nil, rather than just having `typing: has_typ cx.nil e tau`.
+-- proof that it is nil, rather than just having `et: has_typ cx.nil e tau`.
 theorem progress
   (Γ: cx)
   (e: exp) (τ: typ)
   (is_nil: Γ = cx.nil)
-  (typing: has_typ Γ e τ)
-  : val e ∨ (∃ (e': exp), steps e e') :=
+  (et: exp_typ Γ e τ)
+  : (∃ (v: val), e = exp.pure v) ∨ (∃ (e': exp), steps e e') :=
 begin
-  induction typing,
+  induction et,
   left,
-  exact val.int typing_n,
-  left,
-  exact val.true,
-  left,
-  exact val.false,
+  existsi et_v,
+  refl,
   right,
-  cases typing_ih_a is_nil,
-  cases bool_canonical_forms typing_Γ typing_e1 typing_a h,
-  existsi typing_e2,
-  rewrite h_1,
-  exact steps.if_e2 typing_e2 typing_e3,
-  existsi typing_e3,
-  rewrite h_1,
-  exact steps.if_e3 typing_e2 typing_e3,
+  cases et_ih_a is_nil,
   cases h,
-  existsi exp.if_ h_w typing_e2 typing_e3,
-  exact steps.if_e1 typing_e1 h_w typing_e2 typing_e3 h_h,
+  rewrite h_h at *,
+  cases bool_canonical_forms et_Γ h_w (inversion_pure et_Γ h_w typ.bool et_a),
+  rewrite h at *,
+  existsi et_e2,
+  exact steps.if_e2 et_e2 et_e3,
+  rewrite h at *,
+  existsi et_e3,
+  exact steps.if_e3 et_e2 et_e3,
+  cases h,
+  existsi exp.if_ h_w et_e2 et_e3,
+  exact steps.if_e1 et_e1 h_w et_e2 et_e3 h_h,
 end
 
 theorem preservation
   (Γ: cx) (e: exp) (e': exp) (τ: typ)
-  (typing: has_typ Γ e τ)
+  (et: exp_typ Γ e τ)
   (is_nil: Γ = cx.nil)
-  (stepping: steps e e')
-  : has_typ Γ e' τ :=
+  (st: steps e e')
+  : exp_typ Γ e' τ :=
 begin
-  induction stepping generalizing Γ τ,
-  let inv := inversion_if Γ stepping_e1 stepping_e2 stepping_e3 τ typing,
-  apply has_typ.if_ Γ stepping_e1' stepping_e2 stepping_e3 τ,
-  exact stepping_ih Γ typ.bool inv.left is_nil,
+  induction st generalizing Γ τ,
+  let inv := inversion_if Γ st_e1 st_e2 st_e3 τ et,
+  let e1_typ := st_ih Γ typ.bool inv.left is_nil,
+  exact exp_typ.if_ Γ st_e1' st_e2 st_e3 τ e1_typ inv.right.left inv.right.right,
+  let inv := inversion_if Γ (exp.pure val.true) st_e2 st_e3 τ et,
   exact inv.right.left,
-  exact inv.right.right,
-  let inv := inversion_if Γ exp.true stepping_e2 stepping_e3 τ typing,
-  exact inv.right.left,
-  let inv := inversion_if Γ exp.false stepping_e2 stepping_e3 τ typing,
+  let inv := inversion_if Γ (exp.pure val.false) st_e2 st_e3 τ et,
   exact inv.right.right,
 end
