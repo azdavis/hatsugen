@@ -1,5 +1,4 @@
--- any infinite set would work
-def var: Type := string
+import var
 
 inductive typ: Type
 | int: typ

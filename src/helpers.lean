@@ -2,9 +2,9 @@ import statics
 import dynamics
 
 theorem lookup_same
-  (Γ: cx) (x: var) (τ: typ) (τ': typ)
-  (l1: lookup Γ x τ)
-  (l2: lookup Γ x τ')
+  (Γ: cx typ) (x: var) (τ: typ) (τ': typ)
+  (l1: lookup typ Γ x τ)
+  (l2: lookup typ Γ x τ')
   : τ = τ' :=
 begin
   induction l1,
@@ -17,7 +17,7 @@ begin
 end
 
 theorem inversion_pure
-  (Γ: cx) (v: val) (τ: typ)
+  (Γ: cx typ) (v: val) (τ: typ)
   (et: exp_typ Γ (exp.pure v) τ):
   val_typ Γ v τ :=
 begin
@@ -26,7 +26,7 @@ begin
 end
 
 theorem inversion_if
-  (Γ: cx) (e1: exp) (e2: exp) (e3: exp) (τ: typ)
+  (Γ: cx typ) (e1: exp) (e2: exp) (e3: exp) (τ: typ)
   (et: exp_typ Γ (exp.if_ e1 e2 e3) τ)
   : exp_typ Γ e1 typ.bool ∧ exp_typ Γ e2 τ ∧ exp_typ Γ e3 τ :=
 begin
@@ -39,7 +39,7 @@ begin
 end
 
 theorem bool_canonical_forms
-  (Γ: cx) (v: val)
+  (Γ: cx typ) (v: val)
   (et: val_typ Γ v typ.bool)
   : v = val.true ∨ v = val.false :=
 begin
