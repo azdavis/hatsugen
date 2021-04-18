@@ -2,8 +2,8 @@ import helpers
 
 theorem progress
   (Γ: cx typ) (Δ: cx val)
-  (tcx_nil: Γ = cx.nil typ)
-  (vcx_nil: Δ = cx.nil val)
+  (tcx_nil: Γ = list.nil)
+  (vcx_nil: Δ = list.nil)
   (e: exp) (τ: typ)
   (et: exp_typ Γ e τ)
   : (∃ (v: val), e = exp.pure v) ∨ (∃ (e': exp), steps Δ e e') :=
@@ -30,8 +30,8 @@ end
 
 theorem preservation
   (Γ: cx typ) (Δ: cx val)
-  (tcx_nil: Γ = cx.nil typ)
-  (vcx_nil: Δ = cx.nil val)
+  (tcx_nil: Γ = list.nil)
+  (vcx_nil: Δ = list.nil)
   (e: exp) (e': exp) (τ: typ)
   (et: exp_typ Γ e τ)
   (st: steps Δ e e')

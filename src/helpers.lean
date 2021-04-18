@@ -3,8 +3,8 @@ import dynamics
 
 theorem lookup_same
   (Γ: cx typ) (x: var) (τ: typ) (τ': typ)
-  (l1: lookup typ Γ x τ)
-  (l2: lookup typ Γ x τ')
+  (l1: lookup Γ x τ)
+  (l2: lookup Γ x τ')
   : τ = τ' :=
 begin
   induction l1,
