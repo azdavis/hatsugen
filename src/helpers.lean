@@ -16,19 +16,10 @@ begin
   exact l1_ih l2_a_1,
 end
 
-theorem inversion_pure
-  (Γ: cx typ) (v: val) (τ: typ)
-  (et: exp_typ Γ (exp.pure v) τ):
-  val_typ Γ v τ :=
-begin
-  cases et,
-  exact et_a,
-end
-
 theorem inversion_if
   (Γ: cx typ) (e1: exp) (e2: exp) (e3: exp) (τ: typ)
-  (et: exp_typ Γ (exp.if_ e1 e2 e3) τ)
-  : exp_typ Γ e1 typ.bool ∧ exp_typ Γ e2 τ ∧ exp_typ Γ e3 τ :=
+  (et: has_typ Γ (exp.if_ e1 e2 e3) τ)
+  : has_typ Γ e1 typ.bool ∧ has_typ Γ e2 τ ∧ has_typ Γ e3 τ :=
 begin
   cases et,
   split,
@@ -39,13 +30,14 @@ begin
 end
 
 theorem bool_canonical_forms
-  (Γ: cx typ) (v: val)
-  (et: val_typ Γ v typ.bool)
-  : v = val.true ∨ v = val.false :=
+  (Γ: cx typ) (e: exp) (value: val e)
+  (et: has_typ Γ e typ.bool)
+  : e = exp.true ∨ e = exp.false :=
 begin
   cases et,
   left,
   refl,
   right,
   refl,
+  cases value,
 end
