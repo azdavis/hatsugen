@@ -6,7 +6,7 @@ theorem progress
   (vcx_nil: Δ = list.nil)
   (e: exp) (τ: typ)
   (et: exp_typ Γ e τ)
-  : (∃ (v: val), e = exp.pure v) ∨ (∃ (e': exp), steps Δ e e') :=
+  : (∃ (v: val), e = exp.pure v) ∨ (∃ (Δ': cx val) (e': exp), steps Δ e Δ' e') :=
 begin
   induction et,
   left,
@@ -18,23 +18,24 @@ begin
   rewrite h_h at *,
   cases bool_canonical_forms et_Γ h_w (inversion_pure et_Γ h_w typ.bool et_a),
   rewrite h,
-  existsi et_e2,
+  existsi [Δ, et_e2],
   exact steps.if_true Δ et_e2 et_e3,
   rewrite h,
-  existsi et_e3,
+  existsi [Δ, et_e3],
   exact steps.if_false Δ et_e2 et_e3,
   cases h,
-  existsi exp.if_ h_w et_e2 et_e3,
-  exact steps.if_e1 Δ et_e1 h_w et_e2 et_e3 h_h,
+  cases h_h,
+  existsi [h_w, exp.if_ h_h_w et_e2 et_e3],
+  exact steps.if_e1 Δ h_w et_e1 h_h_w et_e2 et_e3 h_h_h,
 end
 
 theorem preservation
-  (Γ: cx typ) (Δ: cx val)
+  (Γ: cx typ) (Δ: cx val) (Δ': cx val)
   (tcx_nil: Γ = list.nil)
   (vcx_nil: Δ = list.nil)
   (e: exp) (e': exp) (τ: typ)
   (et: exp_typ Γ e τ)
-  (st: steps Δ e e')
+  (st: steps Δ e Δ' e')
   : exp_typ Γ e' τ :=
 begin
   induction st generalizing Γ τ,
