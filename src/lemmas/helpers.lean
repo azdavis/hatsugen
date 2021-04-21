@@ -1,6 +1,7 @@
 import defs.statics
 import defs.dynamics
 import defs.fv
+import util.sets
 
 theorem subset_if (e1 e2 e3: exp):
   fv e1 ⊆ fv (exp.if_ e1 e2 e3) ∧

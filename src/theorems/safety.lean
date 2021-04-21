@@ -1,5 +1,5 @@
+import util.sets
 import lemmas.helpers
-import lemmas.sets
 import lemmas.canonical_forms
 import lemmas.inversion
 
