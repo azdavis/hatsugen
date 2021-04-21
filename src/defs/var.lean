@@ -1,5 +1,6 @@
 -- any infinite set would work
-def var: Type := string
+@[reducible]
+def var: Type := ℕ
 
 @[reducible]
 def cx (t: Type) := list (prod var t)
