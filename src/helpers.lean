@@ -11,6 +11,18 @@ begin
   exact bc (ab h)
 end
 
+theorem subset_union_subset
+  {t: Type}
+  (a b c: set t)
+  (ac: a ⊆ c) (bc: b ⊆ c): (a ∪ b) ⊆ c
+:=
+begin
+  intros _ h,
+  cases h,
+  exact ac h,
+  exact bc h,
+end
+
 @[reducible]
 def fv (e: exp): set var :=
   exp.rec_on e
