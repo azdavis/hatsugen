@@ -1,4 +1,4 @@
-import syntax
+import defs.syntax
 
 inductive val: exp -> Prop
 | int (n: ℤ): val (exp.int n)

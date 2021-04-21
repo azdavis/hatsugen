@@ -1,4 +1,4 @@
-import var
+import defs.var
 
 inductive typ: Type
 | int: typ

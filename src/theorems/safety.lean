@@ -1,4 +1,7 @@
-import helpers
+import lemmas.helpers
+import lemmas.sets
+import lemmas.canonical_forms
+import lemmas.inversion
 
 theorem progress
   (Γ: cx typ)

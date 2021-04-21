@@ -1,4 +1,4 @@
-import syntax
+import defs.syntax
 
 inductive has_typ: cx typ -> exp -> typ -> Prop
 | int (Γ: cx typ) (n: ℤ): has_typ Γ (exp.int n) typ.int
