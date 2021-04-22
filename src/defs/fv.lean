@@ -12,3 +12,9 @@ def fv (e: exp): set var :=
   ∅
   -- if_
   (fun _ _ _ s1 s2 s3, s1 ∪ s2 ∪ s3)
+  -- var
+  (fun x, {x})
+  -- fn
+  (fun x _ _ s, s \ {x})
+  -- app
+  (fun _ _ s1 s2, s1 ∪ s2)

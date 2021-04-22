@@ -48,6 +48,41 @@ begin
   exact iff.elim_left (subset_empty_iff fv_e) all,
 end
 
+theorem app_fv_subset (e1 e2: exp):
+  fv e1 ⊆ fv (exp.app e1 e2) ∧
+  fv e2 ⊆ fv (exp.app e1 e2) :=
+begin
+  simp [fv],
+  split,
+  intros _ a,
+  left,
+  exact a,
+  intros _ b,
+  right,
+  exact b,
+end
+
+theorem app_fv_empty
+  (e1 e2: exp)
+  : fv (exp.app e1 e2) = ∅ ↔ (fv e1 = ∅ ∧ fv e2 = ∅) :=
+begin
+  let fv_e := fv (exp.app e1 e2),
+  split,
+  intro h,
+  let sub := app_fv_subset e1 e2,
+  let hm := eq_subset h,
+  let f := fun (a: exp) (b: fv a ⊆ fv_e),
+    iff.elim_left (subset_empty_iff (fv a)) (subset_trans b hm),
+  split,
+  exact f e1 sub.left,
+  exact f e2 sub.right,
+  intro h,
+  let f := fun (a: exp) (b: fv a = ∅),
+    iff.elim_right (subset_empty_iff (fv a)) b,
+  let all := subset_union_subset (f e1 h.left) (f e2 h.right),
+  exact iff.elim_left (subset_empty_iff fv_e) all,
+end
+
 theorem lookup_same
   {Γ: cx typ} {x: var} {τ τ': typ}
   (h1: lookup Γ x τ)

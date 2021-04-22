@@ -31,6 +31,9 @@ begin
   cases h,
   existsi exp.if_ h_w et_e2 et_e3,
   exact steps.if_e1 et_e1 h_w et_e2 et_e3 h_h,
+  sorry,
+  sorry,
+  sorry,
 end
 
 theorem preservation
@@ -55,4 +58,7 @@ begin
   let inv := inversion_if et,
   let emp := iff.elim_left (if_fv_empty exp.false st_e2 st_e3) no_fv,
   exact and.intro inv.right.right emp.right.right,
+  sorry,
+  sorry,
+  sorry,
 end
