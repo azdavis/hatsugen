@@ -24,6 +24,30 @@ begin
   exact c,
 end
 
+theorem if_fv_empty
+  (e1 e2 e3: exp)
+  : fv (exp.if_ e1 e2 e3) = ∅ ↔ (fv e1 = ∅ ∧ fv e2 = ∅ ∧ fv e3 = ∅) :=
+begin
+  let fv_e := fv (exp.if_ e1 e2 e3),
+  split,
+  intro h,
+  let sub := subset_if e1 e2 e3,
+  let hm := eq_subset h,
+  let f := fun (a: exp) (b: fv a ⊆ fv_e),
+    iff.elim_left (subset_empty_iff (fv a)) (subset_trans b hm),
+  split,
+  exact f e1 sub.left,
+  split,
+  exact f e2 sub.right.left,
+  exact f e3 sub.right.right,
+  intro h,
+  let f := fun (a: exp) (b: fv a = ∅),
+    iff.elim_right (subset_empty_iff (fv a)) b,
+  let e1e2 := subset_union_subset (f e1 h.left) (f e2 h.right.left),
+  let all := subset_union_subset e1e2 (f e3 h.right.right),
+  exact iff.elim_left (subset_empty_iff fv_e) all,
+end
+
 theorem lookup_same
   (Γ: cx typ) (x: var) (τ: typ) (τ': typ)
   (l1: lookup Γ x τ)
