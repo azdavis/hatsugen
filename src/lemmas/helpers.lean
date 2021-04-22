@@ -3,7 +3,7 @@ import defs.dynamics
 import defs.fv
 import util.sets
 
-theorem subset_if (e1 e2 e3: exp):
+theorem if_fv_subset (e1 e2 e3: exp):
   fv e1 ⊆ fv (exp.if_ e1 e2 e3) ∧
   fv e2 ⊆ fv (exp.if_ e1 e2 e3) ∧
   fv e3 ⊆ fv (exp.if_ e1 e2 e3) :=
@@ -31,7 +31,7 @@ begin
   let fv_e := fv (exp.if_ e1 e2 e3),
   split,
   intro h,
-  let sub := subset_if e1 e2 e3,
+  let sub := if_fv_subset e1 e2 e3,
   let hm := eq_subset h,
   let f := fun (a: exp) (b: fv a ⊆ fv_e),
     iff.elim_left (subset_empty_iff (fv a)) (subset_trans b hm),

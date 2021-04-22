@@ -19,7 +19,7 @@ begin
   left,
   exact val.false,
   right,
-  let s_if := subset_if et_e1 et_e2 et_e3,
+  let s_if := if_fv_subset et_e1 et_e2 et_e3,
   let fv_e := fv (exp.if_ et_e1 et_e2 et_e3),
   let sub_e := iff.elim_right (subset_empty_iff fv_e) no_fv,
   let sub_e1 := subset_trans s_if.left sub_e,
