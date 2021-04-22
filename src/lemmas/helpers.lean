@@ -49,18 +49,18 @@ begin
 end
 
 theorem lookup_same
-  (Γ: cx typ) (x: var) (τ: typ) (τ': typ)
-  (l1: lookup Γ x τ)
-  (l2: lookup Γ x τ')
+  {Γ: cx typ} {x: var} {τ τ': typ}
+  (h1: lookup Γ x τ)
+  (h2: lookup Γ x τ')
   : τ = τ' :=
 begin
-  induction l1,
-  cases l2,
+  induction h1,
+  cases h2,
   refl,
   contradiction,
-  cases l2,
+  cases h2,
   contradiction,
-  exact l1_ih l2_a_1,
+  exact h1_ih h2_a_1,
 end
 
 theorem fresh (xs: list var): ∃ (x: var), ∀ (y ∈ xs), y < x :=

@@ -6,7 +6,7 @@ inductive has_typ: cx typ -> exp -> typ -> Prop
 | false (Γ: cx typ): has_typ Γ exp.false typ.bool
 | if_
     (Γ: cx typ)
-    (e1: exp) (e2: exp) (e3: exp) (τ: typ):
+    (e1 e2 e3: exp) (τ: typ):
     has_typ Γ e1 typ.bool ->
     has_typ Γ e2 τ ->
     has_typ Γ e3 τ ->
