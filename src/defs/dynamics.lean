@@ -30,5 +30,5 @@ inductive steps: exp -> exp -> Prop
 | app_done
     {x: var} {τ: typ} {e e2 e': exp}:
     val e2 ->
-    subst (list.cons (prod.mk x e2) list.nil) e e' ->
+    subst [(x, e2)] e e' ->
     steps (exp.app (exp.fn x τ e) e2) e'

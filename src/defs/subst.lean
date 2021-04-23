@@ -1,6 +1,9 @@
 import defs.syntax
 import defs.fv
 
+def all_vars (Δ: cx exp) (e: exp): list var :=
+  list.foldr (fun a s, fv (prod.snd a) ++ s) (fv e) Δ
+
 inductive subst: cx exp -> exp -> exp -> Prop
 | int {Δ: cx exp} {n: ℤ}: subst Δ (exp.int n) (exp.int n)
 | true {Δ: cx exp}: subst Δ exp.true exp.true
@@ -22,8 +25,8 @@ inductive subst: cx exp -> exp -> exp -> Prop
     subst Δ (exp.var x) (exp.var x)
 | fn
     {Δ: cx exp} {x x': var} {τ: typ} {e e': exp}:
-    x' ∉ list.foldr (fun a s, fv (prod.snd a) ∪ s) (fv e) Δ ->
-    subst (list.cons (prod.mk x (exp.var x')) Δ) e e' ->
+    x' ∉ all_vars Δ e ->
+    subst ((x, exp.var x') :: Δ) e e' ->
     subst Δ (exp.fn x τ e) (exp.fn x' τ e')
 | app
     {Δ: cx exp}
