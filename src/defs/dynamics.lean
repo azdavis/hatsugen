@@ -9,26 +9,26 @@ inductive val: exp -> Prop
 
 inductive steps: exp -> exp -> Prop
 | if_e1
-    (e1 e1' e2 e3: exp):
+    {e1 e2 e3 e1': exp}:
     steps e1 e1' ->
     steps (exp.if_ e1 e2 e3) (exp.if_ e1' e2 e3)
 | if_true
-    (e2 e3: exp):
+    {e2 e3: exp}:
     steps (exp.if_ exp.true e2 e3) e2
 | if_false
-    (e2 e3: exp):
+    {e2 e3: exp}:
     steps (exp.if_ exp.false e2 e3) e3
 | app_e1
-    (e1 e1' e2: exp):
+    {e1 e2 e1': exp}:
     steps e1 e1' ->
     steps (exp.app e1 e2) (exp.app e1' e2)
 | app_e2
-    (e1 e2 e2': exp):
+    {e1 e2 e2': exp}:
     val e1 ->
     steps e2 e2' ->
     steps (exp.app e1 e2) (exp.app e1 e2')
 | app_done
-    (x: var) (τ: typ) (e e2 e': exp):
+    {x: var} {τ: typ} {e e2 e': exp}:
     val e2 ->
     subst (list.cons (prod.mk x e2) list.nil) e e' ->
     steps (exp.app (exp.fn x τ e) e2) e'
