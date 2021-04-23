@@ -6,7 +6,7 @@ def var: Type := ℕ
 def cx (t: Type) := list (prod var t)
 
 @[reducible]
-def vars {t: Type} (Γ: cx t): set var := { x | x ∈ list.map prod.fst Γ }
+def vars {t: Type} (Γ: cx t): list var := list.map prod.fst Γ
 
 inductive lookup {t: Type}: cx t -> var -> t -> Prop
 | hd (Γ: cx t) (x: var) (out: t): lookup (list.cons (prod.mk x out) Γ) x out

@@ -3,84 +3,62 @@ import defs.dynamics
 import defs.fv
 import util.sets
 
-theorem if_fv_subset (e1 e2 e3: exp):
-  fv e1 ⊆ fv (exp.if_ e1 e2 e3) ∧
-  fv e2 ⊆ fv (exp.if_ e1 e2 e3) ∧
-  fv e3 ⊆ fv (exp.if_ e1 e2 e3) :=
+theorem append_nil_both
+  {t: Type} (xs ys: list t): xs ++ ys = [] ↔ xs = [] ∧ ys = [] :=
 begin
-  simp [fv],
   split,
-  intros _ a,
-  left,
-  left,
-  exact a,
+  intro h,
+  induction xs,
+  induction ys,
   split,
-  intros _ b,
-  left,
-  right,
-  exact b,
-  intros _ c,
-  right,
-  exact c,
+  refl,
+  refl,
+  split,
+  refl,
+  cases h,
+  cases h,
+  intro h,
+  cases h,
+  rw h_left,
+  rw h_right,
+  simp [list.append],
 end
 
 theorem if_fv_empty
   (e1 e2 e3: exp)
-  : fv (exp.if_ e1 e2 e3) = ∅ ↔ (fv e1 = ∅ ∧ fv e2 = ∅ ∧ fv e3 = ∅) :=
+  : fv (exp.if_ e1 e2 e3) = [] ↔ (fv e1 = [] ∧ fv e2 = [] ∧ fv e3 = []) :=
 begin
-  let fv_e := fv (exp.if_ e1 e2 e3),
   split,
   intro h,
-  let sub := if_fv_subset e1 e2 e3,
-  let hm := eq_subset h,
-  let f := fun (a: exp) (b: fv a ⊆ fv_e),
-    iff.elim_left (subset_empty_iff (fv a)) (subset_trans b hm),
+  simp [fv] at h,
+  let ap := iff.elim_left (append_nil_both (fv e1) (fv e2 ++ fv e3)) h,
   split,
-  exact f e1 sub.left,
-  split,
-  exact f e2 sub.right.left,
-  exact f e3 sub.right.right,
+  exact ap.left,
+  exact iff.elim_left (append_nil_both (fv e2) (fv e3)) ap.right,
   intro h,
-  let f := fun (a: exp) (b: fv a = ∅),
-    iff.elim_right (subset_empty_iff (fv a)) b,
-  let e1e2 := subset_union_subset (f e1 h.left) (f e2 h.right.left),
-  let all := subset_union_subset e1e2 (f e3 h.right.right),
-  exact iff.elim_left (subset_empty_iff fv_e) all,
-end
-
-theorem app_fv_subset (e1 e2: exp):
-  fv e1 ⊆ fv (exp.app e1 e2) ∧
-  fv e2 ⊆ fv (exp.app e1 e2) :=
-begin
-  simp [fv],
-  split,
-  intros _ a,
-  left,
-  exact a,
-  intros _ b,
-  right,
-  exact b,
+  cases h,
+  cases h_right,
+  simp [fv] at *,
+  rw h_left,
+  rw h_right_left,
+  rw h_right_right,
+  simp [list.append],
 end
 
 theorem app_fv_empty
   (e1 e2: exp)
-  : fv (exp.app e1 e2) = ∅ ↔ (fv e1 = ∅ ∧ fv e2 = ∅) :=
+  : fv (exp.app e1 e2) = [] ↔ (fv e1 = [] ∧ fv e2 = []) :=
 begin
-  let fv_e := fv (exp.app e1 e2),
   split,
   intro h,
-  let sub := app_fv_subset e1 e2,
-  let hm := eq_subset h,
-  let f := fun (a: exp) (b: fv a ⊆ fv_e),
-    iff.elim_left (subset_empty_iff (fv a)) (subset_trans b hm),
-  split,
-  exact f e1 sub.left,
-  exact f e2 sub.right,
+  simp [fv],
+  exact iff.elim_left (append_nil_both (fv e1) (fv e2)) h,
   intro h,
-  let f := fun (a: exp) (b: fv a = ∅),
-    iff.elim_right (subset_empty_iff (fv a)) b,
-  let all := subset_union_subset (f e1 h.left) (f e2 h.right),
-  exact iff.elim_left (subset_empty_iff fv_e) all,
+  cases h,
+  simp [fv] at *,
+  rw h_left,
+  rw h_right,
+  simp [list.append],
 end
 
 theorem lookup_same
@@ -131,7 +109,6 @@ begin
   induction Δ,
   right,
   simp [vars],
-  exact mem_empty_eq x,
   cases Δ_hd,
   cases classical.em (x = Δ_hd_fst),
   left,
