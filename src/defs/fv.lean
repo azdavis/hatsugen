@@ -13,7 +13,7 @@ def fv (e: exp): list var :=
   -- if_
   (fun _ _ _ s1 s2 s3, s1 ++ (s2 ++ s3))
   -- var
-  (fun x, {x})
+  (fun x, [x])
   -- fn
   (fun x _ _, list.filter (fun y, x ≠ y))
   -- app
