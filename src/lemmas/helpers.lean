@@ -124,3 +124,29 @@ begin
   exact nat.lt_succ_of_le (le_not_le_of_lt y_lt_w).left,
   exact nat.lt_succ_of_le (le_of_lt (lt_trans y_lt_w h)),
 end
+
+theorem lookup_or_not {t: Type} (Δ: cx t) (x: var):
+  (∃ (a: t), lookup Δ x a) ∨ x ∉ vars Δ :=
+begin
+  induction Δ,
+  right,
+  simp [vars],
+  exact mem_empty_eq x,
+  cases Δ_hd,
+  cases classical.em (x = Δ_hd_fst),
+  left,
+  existsi Δ_hd_snd,
+  rw h,
+  exact lookup.hd Δ_tl Δ_hd_fst Δ_hd_snd,
+  cases Δ_ih,
+  cases Δ_ih,
+  left,
+  existsi Δ_ih_w,
+  exact lookup.tl Δ_tl x Δ_ih_w Δ_hd_fst Δ_hd_snd h Δ_ih_h,
+  right,
+  simp [vars],
+  intro h,
+  cases h,
+  contradiction,
+  contradiction,
+end

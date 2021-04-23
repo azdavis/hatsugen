@@ -17,7 +17,7 @@ inductive subst: cx exp -> exp -> exp -> Prop
     lookup Δ x e' ->
     subst Δ (exp.var x) e'
 | var_diff
-    {Δ: cx exp} (x: var):
+    {Δ: cx exp} {x: var}:
     x ∉ vars Δ ->
     subst Δ (exp.var x) (exp.var x)
 | fn
