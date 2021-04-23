@@ -22,7 +22,7 @@ inductive subst: cx exp -> exp -> exp -> Prop
     subst Δ (exp.var x) (exp.var x)
 | fn
     (Δ: cx exp) (x x': var) (τ: typ) (e e': exp):
-    (∀ a ∈ list.cons e (list.map prod.snd Δ), x' ∉ fv a) ->
+    (x' ∉ list.foldr (fun a s, fv (prod.snd a) ∪ s) (fv e) Δ) ->
     subst (list.cons (prod.mk x (exp.var x')) Δ) e e' ->
     subst Δ (exp.fn x τ e) (exp.fn x' τ e')
 | app
