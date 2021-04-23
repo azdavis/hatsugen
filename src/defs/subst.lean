@@ -18,11 +18,11 @@ inductive subst: cx exp -> exp -> exp -> Prop
     subst Δ (exp.var x) e'
 | var_diff
     {Δ: cx exp} (x: var):
-    (∀ p ∈ Δ, prod.fst p ≠ x) ->
+    x ∉ vars Δ ->
     subst Δ (exp.var x) (exp.var x)
 | fn
     {Δ: cx exp} {x x': var} {τ: typ} {e e': exp}:
-    (x' ∉ list.foldr (fun a s, fv (prod.snd a) ∪ s) (fv e) Δ) ->
+    x' ∉ list.foldr (fun a s, fv (prod.snd a) ∪ s) (fv e) Δ ->
     subst (list.cons (prod.mk x (exp.var x')) Δ) e e' ->
     subst Δ (exp.fn x τ e) (exp.fn x' τ e')
 | app
