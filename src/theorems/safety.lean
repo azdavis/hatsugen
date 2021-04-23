@@ -1,4 +1,3 @@
-import util.sets
 import lemmas.helpers
 import lemmas.canonical_forms
 import lemmas.inversion

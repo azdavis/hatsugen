@@ -1,7 +1,6 @@
 import defs.statics
 import defs.dynamics
 import defs.fv
-import util.sets
 
 theorem append_nil_both
   {t: Type} (xs ys: list t): xs ++ ys = [] ↔ xs = [] ∧ ys = [] :=
