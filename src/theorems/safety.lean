@@ -6,7 +6,7 @@ theorem progress
   {Γ: cx typ}
   {e: exp}
   {τ: typ}
-  (no_fv: fv e = ∅)
+  (no_fv: fv e = [])
   (et: has_typ Γ e τ)
   : val e ∨ (∃ (e': exp), steps e e') :=
 begin
@@ -39,10 +39,10 @@ theorem preservation
   {Γ: cx typ}
   {e e': exp}
   {τ: typ}
-  (no_fv: fv e = ∅)
+  (no_fv: fv e = [])
   (et: has_typ Γ e τ)
   (st: steps e e')
-  : has_typ Γ e' τ ∧ fv e' = ∅ :=
+  : has_typ Γ e' τ ∧ fv e' = [] :=
 begin
   induction st generalizing Γ τ,
   let inv := inversion_if et,
