@@ -76,7 +76,7 @@ begin
   exact h1_ih h2_a_1,
 end
 
-theorem fresh (xs: list var): ∃ (x: var), ∀ (y ∈ xs), y < x :=
+theorem fresh' (xs: list var): ∃ (x: var), ∀ (y ∈ xs), y < x :=
 begin
   induction xs,
   existsi 0,
@@ -101,6 +101,16 @@ begin
   rw h,
   exact nat.lt_succ_of_le (le_not_le_of_lt y_lt_w).left,
   exact nat.lt_succ_of_le (le_of_lt (lt_trans y_lt_w h)),
+end
+
+theorem fresh (xs: list var): ∃ (x: var), x ∉ xs :=
+begin
+  cases fresh' xs,
+  existsi w,
+  intro h1,
+  let b1 := h w h1,
+  let b2 := lt_irrefl w,
+  contradiction,
 end
 
 theorem lookup_or_not {t: Type} (Δ: cx t) (x: var):
