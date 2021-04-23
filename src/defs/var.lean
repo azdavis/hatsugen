@@ -1,4 +1,4 @@
--- any infinite set would work
+-- any type with infinite values would work
 @[reducible]
 def var: Type := ℕ
 
