@@ -188,7 +188,7 @@ begin
   cases xs_hd,
   cases classical.em (x = xs_hd_fst),
   rw symm h at ⊢ h_a_1,
-  rw @lookup_same_hd t (xs_tl ++ (y, v2) :: ys) ((x, xs_hd_snd) :: xs_tl ++ (y, v2) :: ys) x xs_hd_snd v rfl h_a_1,
+  rw lookup_same_hd rfl h_a_1,
   exact lookup.tl ((x, v) :: xs_tl ++ ys) x v y v1 h_a (lookup.hd (xs_tl ++ ys) x v),
   let s1 := inversion_lookup rfl h h_a_1,
   let s2 := xs_ih (lookup.tl (xs_tl ++ (y, v2) :: ys) x v y v1 h_a s1),
