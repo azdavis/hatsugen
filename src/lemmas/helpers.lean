@@ -175,26 +175,26 @@ begin
 end
 
 theorem useless_extra_lookup'
-  {t: Type} {xs ys: cx t} {v v1 v2: t} {y x: var}
-  (h: lookup ((y, v1) :: xs ++ (y, v2) :: ys) x v)
-  : lookup ((y, v1) :: xs ++ ys) x v :=
+  {t: Type} {ys zs: cx t} {v v1 v2: t} {y x: var}
+  (h: lookup ((y, v1) :: ys ++ (y, v2) :: zs) x v)
+  : lookup ((y, v1) :: ys ++ zs) x v :=
 begin
-  induction xs,
+  induction ys,
   cases h,
-  exact lookup.hd ys y v,
-  exact lookup.tl ys x v y v1 h_a (inversion_lookup rfl h_a h_a_1),
+  exact lookup.hd zs y v,
+  exact lookup.tl zs x v y v1 h_a (inversion_lookup rfl h_a h_a_1),
   cases h,
-  exact lookup.hd (xs_hd :: xs_tl ++ ys) y v,
-  cases xs_hd,
-  cases classical.em (x = xs_hd_fst),
+  exact lookup.hd (ys_hd :: ys_tl ++ zs) y v,
+  cases ys_hd,
+  cases classical.em (x = ys_hd_fst),
   rw symm h at ⊢ h_a_1,
   rw lookup_same_hd rfl h_a_1,
-  exact lookup.tl ((x, v) :: xs_tl ++ ys) x v y v1 h_a (lookup.hd (xs_tl ++ ys) x v),
+  exact lookup.tl ((x, v) :: ys_tl ++ zs) x v y v1 h_a (lookup.hd (ys_tl ++ zs) x v),
   let s1 := inversion_lookup rfl h h_a_1,
-  let s2 := xs_ih (lookup.tl (xs_tl ++ (y, v2) :: ys) x v y v1 h_a s1),
+  let s2 := ys_ih (lookup.tl (ys_tl ++ (y, v2) :: zs) x v y v1 h_a s1),
   let s3 := inversion_lookup rfl h_a s2,
-  let s4 := lookup.tl (xs_tl ++ ys) x v xs_hd_fst xs_hd_snd h s3,
-  exact lookup.tl ((xs_hd_fst, xs_hd_snd) :: xs_tl ++ ys) x v y v1 h_a s4,
+  let s4 := lookup.tl (ys_tl ++ zs) x v ys_hd_fst ys_hd_snd h s3,
+  exact lookup.tl ((ys_hd_fst, ys_hd_snd) :: ys_tl ++ zs) x v y v1 h_a s4,
 end
 
 theorem useless_extra_lookup
@@ -217,10 +217,10 @@ begin
 end
 
 theorem useless_extra
-  {xs ys Γ: cx typ} {e: exp} {τ τ1 τ2: typ} {x: var}
-  {Γ_is: Γ = (x, τ1) :: xs ++ (x, τ2) :: ys}
+  {ys zs Γ: cx typ} {e: exp} {τ τ1 τ2: typ} {x: var}
+  {Γ_is: Γ = (x, τ1) :: ys ++ (x, τ2) :: zs}
   (h: has_typ Γ e τ)
-  : has_typ ((x, τ1) :: xs ++ ys) e τ :=
+  : has_typ ((x, τ1) :: ys ++ zs) e τ :=
 begin
   induction h,
   exact has_typ.int,
@@ -234,7 +234,7 @@ begin
   exfalso,
   exact h_a_a (symm h),
   let h': h_x ≠ x := fun x, h (symm x),
-  let tl := xs ++ (x, τ2) :: ys,
+  let tl := ys ++ (x, τ2) :: zs,
   let s1 := inversion_lookup rfl h' h_a,
   let s2 := lookup.tl tl h_x h_τ x τ1 h' s1,
   exact has_typ.var (useless_extra_lookup' s2),
