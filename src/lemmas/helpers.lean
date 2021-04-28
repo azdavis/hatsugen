@@ -136,33 +136,3 @@ begin
   contradiction,
   contradiction,
 end
-
-theorem subst_defined (Δ: cx exp) (e: exp): ∃ (e': exp), subst Δ e e' :=
-begin
-  induction e generalizing Δ,
-  existsi exp.int e,
-  exact subst.int,
-  existsi exp.true,
-  exact subst.true,
-  existsi exp.false,
-  exact subst.false,
-  cases e_ih_a Δ,
-  cases e_ih_a_1 Δ,
-  cases e_ih_a_2 Δ,
-  existsi exp.if_ w w_1 w_2,
-  exact subst.if_ h h_1 h_2,
-  cases lookup_or_not Δ e,
-  cases h,
-  existsi h_w,
-  exact subst.var_same h_h,
-  existsi exp.var e,
-  exact subst.var_diff h,
-  cases fresh (all_vars Δ e_a_2),
-  cases e_ih ((e_a, exp.var w) :: Δ),
-  existsi exp.fn w e_a_1 w_1,
-  exact subst.fn h h_1,
-  cases e_ih_a Δ,
-  cases e_ih_a_1 Δ,
-  existsi exp.app w w_1,
-  exact subst.app h h_1,
-end

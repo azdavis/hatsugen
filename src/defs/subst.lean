@@ -4,33 +4,19 @@ import defs.fv
 def all_vars (Δ: cx exp) (e: exp): list var :=
   list.foldr (fun a s, fv (prod.snd a) ++ s) (fv e) Δ
 
-inductive subst: cx exp -> exp -> exp -> Prop
-| int {Δ: cx exp} {n: ℤ}: subst Δ (exp.int n) (exp.int n)
-| true {Δ: cx exp}: subst Δ exp.true exp.true
-| false {Δ: cx exp}: subst Δ exp.false exp.false
-| if_
-    {Δ: cx exp}
-    {e1 e2 e3 e1' e2' e3': exp}:
-    subst Δ e1 e1' ->
-    subst Δ e2 e2' ->
-    subst Δ e3 e3' ->
-    subst Δ (exp.if_ e1 e2 e3) (exp.if_ e1' e2' e3')
-| var_same
-    {Δ: cx exp} {x: var} {e': exp}:
-    lookup Δ x e' ->
-    subst Δ (exp.var x) e'
-| var_diff
-    {Δ: cx exp} {x: var}:
-    x ∉ vars Δ ->
-    subst Δ (exp.var x) (exp.var x)
-| fn
-    {Δ: cx exp} {x x': var} {τ: typ} {e e': exp}:
-    x' ∉ all_vars Δ e ->
-    subst ((x, exp.var x') :: Δ) e e' ->
-    subst Δ (exp.fn x τ e) (exp.fn x' τ e')
-| app
-    {Δ: cx exp}
-    {e1 e2 e1' e2': exp}:
-    subst Δ e1 e1' ->
-    subst Δ e2 e2' ->
-    subst Δ (exp.app e1 e2) (exp.app e1' e2')
+def subst (ex: exp) (x: var) (e: exp) (_: fv ex = []): exp :=
+  exp.rec_on e
+  -- int
+  exp.int
+  -- true
+  exp.true
+  -- false
+  exp.false
+  -- if_
+  (fun _ _ _, exp.if_)
+  -- var
+  (fun y, if y = x then ex else exp.var y)
+  -- fn
+  (fun y τ e e', exp.fn y τ (if x = y then e else e'))
+  -- app
+  (fun _ _, exp.app)

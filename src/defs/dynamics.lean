@@ -28,7 +28,6 @@ inductive steps: exp -> exp -> Prop
     steps e2 e2' ->
     steps (exp.app e1 e2) (exp.app e1 e2')
 | app_done
-    {x: var} {τ: typ} {e e2 e': exp}:
+    {x: var} {τ: typ} {e e2: exp} (h: fv e2 = []):
     val e2 ->
-    subst [(x, e2)] e e' ->
-    steps (exp.app (exp.fn x τ e) e2) e'
+    steps (exp.app (exp.fn x τ e) e2) (subst e2 x e h)
