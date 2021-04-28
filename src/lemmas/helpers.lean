@@ -215,3 +215,72 @@ begin
   let s2 := xs_ih s1,
   exact lookup.tl Γ x v xs_hd_fst xs_hd_snd h_1 s2,
 end
+
+theorem useless_extra
+  {xs ys Γ: cx typ} {e: exp} {τ τ1 τ2: typ} {x: var}
+  {Γ_is: Γ = (x, τ1) :: xs ++ (x, τ2) :: ys}
+  (h: has_typ Γ e τ)
+  : has_typ ((x, τ1) :: xs ++ ys) e τ :=
+begin
+  induction h,
+  exact has_typ.int,
+  exact has_typ.true,
+  exact has_typ.false,
+  exact has_typ.if_ (@h_ih_a Γ_is) (@h_ih_a_1 Γ_is) (@h_ih_a_2 Γ_is),
+  rw Γ_is at h_a,
+  cases classical.em (x = h_x),
+  cases h_a,
+  exact has_typ.var (useless_extra_lookup' h_a),
+  exfalso,
+  exact h_a_a (symm h),
+  let h': h_x ≠ x := fun x, h (symm x),
+  let tl := xs ++ (x, τ2) :: ys,
+  let s1 := inversion_lookup rfl h' h_a,
+  let s2 := lookup.tl tl h_x h_τ x τ1 h' s1,
+  exact has_typ.var (useless_extra_lookup' s2),
+  sorry,
+  sorry,
+end
+
+theorem subst_preservation
+  {Γ Γ': cx typ}
+  {e ex e': exp}
+  {x: var}
+  {τ τx: typ}
+  {is_cons: Γ' = (x, τx) :: Γ}
+  (no_fv: fv ex = [])
+  (et: has_typ Γ' e τ)
+  (e't: has_typ Γ ex τx)
+  (sub: subst ex x e no_fv = e')
+  : has_typ Γ e' τ :=
+begin
+  rw symm sub,
+  induction et generalizing e' Γ,
+  exact has_typ.int,
+  exact has_typ.true,
+  exact has_typ.false,
+  -- a bit odd
+  let a := et_ih_a e't rfl,
+  let b := et_ih_a_1 e't rfl,
+  let c := et_ih_a_2 e't rfl,
+  exact has_typ.if_ a b c,
+  exact is_cons,
+  exact is_cons,
+  exact is_cons,
+  rw is_cons at et_a,
+  cases et_a,
+  simp [subst],
+  exact e't,
+  simp [subst, et_a_a],
+  exact has_typ.var et_a_a_1,
+  cases classical.em (x = et_x),
+  rw is_cons at et_a,
+  rw h at ⊢ et_a,
+  simp [subst],
+  sorry,
+  simp [subst, h],
+  let hm := et_ih e't rfl,
+  sorry,
+  sorry,
+  sorry,
+end
