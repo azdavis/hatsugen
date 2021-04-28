@@ -174,7 +174,7 @@ begin
   exact h_a_1,
 end
 
-theorem useless_extra_lookup
+theorem useless_extra_lookup'
   {t: Type} {xs ys: cx t} {v v1 v2: t} {y x: var}
   (h: lookup ((y, v1) :: xs ++ (y, v2) :: ys) x v)
   : lookup ((y, v1) :: xs ++ ys) x v :=
@@ -195,4 +195,23 @@ begin
   let s3 := inversion_lookup rfl h_a s2,
   let s4 := lookup.tl (xs_tl ++ ys) x v xs_hd_fst xs_hd_snd h s3,
   exact lookup.tl ((xs_hd_fst, xs_hd_snd) :: xs_tl ++ ys) x v y v1 h_a s4,
+end
+
+theorem useless_extra_lookup
+  {t: Type} {xs ys zs: cx t} {v v1 v2: t} {y x: var}
+  (h: lookup (xs ++ (y, v1) :: ys ++ (y, v2) :: zs) x v)
+  : lookup (xs ++ (y, v1) :: ys ++ zs) x v :=
+begin
+  induction xs,
+  simp [list.append] at ⊢ h,
+  exact useless_extra_lookup' h,
+  cases xs_hd,
+  let Γ := xs_tl ++ (y, v1) :: ys ++ zs,
+  cases classical.em (x = xs_hd_fst),
+  rw symm h_1 at h ⊢,
+  rw lookup_same_hd rfl h,
+  exact lookup.hd Γ x v,
+  let s1 := inversion_lookup rfl h_1 h,
+  let s2 := xs_ih s1,
+  exact lookup.tl Γ x v xs_hd_fst xs_hd_snd h_1 s2,
 end
