@@ -136,3 +136,63 @@ begin
   contradiction,
   contradiction,
 end
+
+theorem lookup_hd_any
+  {t: Type} {Γ: cx t} {x: var} {v: t}
+  (pf: lookup ((x, v) :: Γ) x v)
+  (Γ': cx t)
+  : lookup ((x, v) :: Γ') x v :=
+begin
+  cases pf,
+  exact lookup.hd Γ' x v,
+  contradiction,
+end
+
+theorem lookup_same_hd
+  {t: Type} {xs Γ: cx t} {x: var} {v v': t}
+  (Γ_is: Γ = (x, v) :: xs)
+  (h: lookup Γ x v')
+  : v = v' :=
+begin
+  induction h,
+  exact symm (prod.mk.inj (list.cons.inj Γ_is).left).right,
+  let bad := symm (prod.mk.inj (list.cons.inj Γ_is).left).left,
+  contradiction,
+end
+
+theorem inversion_lookup
+  {t: Type} {Γ Γ': cx t} {x y: var} {vx vy: t}
+  (Γ'_is: Γ' = (y, vy) :: Γ)
+  (ne: x ≠ y)
+  (h: lookup Γ' x vx)
+  : lookup Γ x vx :=
+begin
+  induction h,
+  let bad := (prod.mk.inj (list.cons.inj Γ'_is).left).left,
+  contradiction,
+  rw (list.cons.inj Γ'_is).right at h_a_1,
+  exact h_a_1,
+end
+
+theorem useless_extra_lookup
+  {t: Type} {xs ys: cx t} {v v1 v2: t} {y x: var}
+  (h: lookup ((y, v1) :: xs ++ (y, v2) :: ys) x v)
+  : lookup ((y, v1) :: xs ++ ys) x v :=
+begin
+  induction xs,
+  cases h,
+  exact lookup.hd ys y v,
+  exact lookup.tl ys x v y v1 h_a (inversion_lookup rfl h_a h_a_1),
+  cases h,
+  exact lookup.hd (xs_hd :: xs_tl ++ ys) y v,
+  cases xs_hd,
+  cases classical.em (x = xs_hd_fst),
+  rw symm h at ⊢ h_a_1,
+  rw @lookup_same_hd t (xs_tl ++ (y, v2) :: ys) ((x, xs_hd_snd) :: xs_tl ++ (y, v2) :: ys) x xs_hd_snd v rfl h_a_1,
+  exact lookup.tl ((x, v) :: xs_tl ++ ys) x v y v1 h_a (lookup.hd (xs_tl ++ ys) x v),
+  let s1 := inversion_lookup rfl h h_a_1,
+  let s2 := xs_ih (lookup.tl (xs_tl ++ (y, v2) :: ys) x v y v1 h_a s1),
+  let s3 := inversion_lookup rfl h_a s2,
+  let s4 := lookup.tl (xs_tl ++ ys) x v xs_hd_fst xs_hd_snd h s3,
+  exact lookup.tl ((xs_hd_fst, xs_hd_snd) :: xs_tl ++ ys) x v y v1 h_a s4,
+end
