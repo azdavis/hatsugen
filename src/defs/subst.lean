@@ -12,7 +12,7 @@ def subst (ex: exp) (x: var) (e: exp) (_: fv ex = []): exp :=
   -- if_
   (fun _ _ _, exp.if_)
   -- var
-  (fun y, if y = x then ex else exp.var y)
+  (fun y, if x = y then ex else exp.var y)
   -- fn
   (fun y τ e e', exp.fn y τ (if x = y then e else e'))
   -- app

@@ -5,32 +5,17 @@ import util.list
 def var: Type := ℕ
 
 @[reducible]
-def ne_cx_entry {t: Type} (a: prod var t) (b: prod var t): Prop :=
+def ne_fst {t: Type} (a: prod var t) (b: prod var t): Prop :=
   a.fst ≠ b.fst
 
 structure cx (t: Type): Type :=
   (entries: list (prod var t))
-  (nodupkeys: pairwise ne_cx_entry entries)
+  (nodupkeys: pairwise ne_fst entries)
 
-def cx.insert {t: Type} (x: var) (v: t) (Γ: cx t): cx t :=
-begin
-  cases Γ,
-  let p := ne_cx_entry (x, v),
-  let entries' := (x, v) :: list.filter p Γ_entries,
-  let spec := filter_spec p Γ_entries,
-  let spec' := fun a, fun b, (spec a b).right,
-  let nodupkeys' := @pairwise.cons
-    (prod var t) ne_cx_entry (x, v) (list.filter p Γ_entries) spec'
-    (filter_pairwise p Γ_nodupkeys),
-  exact cx.mk entries' nodupkeys',
-end
+@[reducible]
+def cx.empty {t: Type}: cx t := cx.mk [] (pairwise.nil ne_fst)
 
-instance cx_has_insert {t: Type}: has_insert (prod var t) (cx t) :=
-  has_insert.mk (fun a, fun Γ, begin
-    cases a,
-    exact cx.insert a_fst a_snd Γ
-  end)
-
+@[reducible]
 def cx.lookup {t: Type} (Γ: cx t) (x: var): option t :=
 begin
   cases Γ,
@@ -43,3 +28,22 @@ begin
     Γ_entries_ih (pairwise_inversion Γ_nodupkeys)
   ),
 end
+
+@[reducible]
+def cx.insert {t: Type} (x: var) (v: t) (Γ: cx t): cx t :=
+begin
+  cases Γ,
+  let p: prod var t -> Prop := fun a, x ≠ a.fst,
+  let entries' := (x, v) :: list.filter p Γ_entries,
+  let f := fun a, fun b, (filter_spec p Γ_entries a b).right,
+  let nodupkeys' := @pairwise.cons
+    (prod var t) ne_fst (x, v) (list.filter p Γ_entries) f
+    (filter_pairwise p Γ_nodupkeys),
+  exact cx.mk entries' nodupkeys',
+end
+
+instance cx_has_insert {t: Type}: has_insert (prod var t) (cx t) :=
+  has_insert.mk (fun a, fun Γ, begin
+    cases a,
+    exact cx.insert a_fst a_snd Γ
+  end)
