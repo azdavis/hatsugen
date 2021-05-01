@@ -1,27 +1,7 @@
 import defs.statics
 import defs.dynamics
 import defs.fv
-
-theorem append_nil_both
-  {t: Type} (xs ys: list t): xs ++ ys = [] ↔ xs = [] ∧ ys = [] :=
-begin
-  split,
-  intro h,
-  induction xs,
-  induction ys,
-  split,
-  refl,
-  refl,
-  split,
-  refl,
-  cases h,
-  cases h,
-  intro h,
-  cases h,
-  rw h_left,
-  rw h_right,
-  simp [list.append],
-end
+import util.list
 
 theorem if_fv_empty
   (e1 e2 e3: exp)
@@ -58,21 +38,6 @@ begin
   rw h_left,
   rw h_right,
   simp [list.append],
-end
-
-theorem lookup_same
-  {Γ: cx typ} {x: var} {τ τ': typ}
-  (h1: lookup Γ x τ)
-  (h2: lookup Γ x τ')
-  : τ = τ' :=
-begin
-  induction h1,
-  cases h2,
-  refl,
-  contradiction,
-  cases h2,
-  contradiction,
-  exact h1_ih h2_a_1,
 end
 
 theorem fresh' (xs: list var): ∃ (x: var), ∀ (y ∈ xs), y < x :=
@@ -112,145 +77,15 @@ begin
   contradiction,
 end
 
-theorem lookup_or_not {t: Type} (Δ: cx t) (x: var):
-  (∃ (a: t), lookup Δ x a) ∨ x ∉ vars Δ :=
-begin
-  induction Δ,
-  right,
-  simp [vars],
-  cases Δ_hd,
-  cases classical.em (x = Δ_hd_fst),
-  left,
-  existsi Δ_hd_snd,
-  rw h,
-  exact lookup.hd Δ_tl Δ_hd_fst Δ_hd_snd,
-  cases Δ_ih,
-  cases Δ_ih,
-  left,
-  existsi Δ_ih_w,
-  exact lookup.tl Δ_tl x Δ_ih_w Δ_hd_fst Δ_hd_snd h Δ_ih_h,
-  right,
-  simp [vars],
-  intro h,
-  cases h,
-  contradiction,
-  contradiction,
-end
-
-theorem lookup_hd_any
-  {t: Type} {Γ: cx t} {x: var} {v: t}
-  (pf: lookup ((x, v) :: Γ) x v)
-  (Γ': cx t)
-  : lookup ((x, v) :: Γ') x v :=
-begin
-  cases pf,
-  exact lookup.hd Γ' x v,
-  contradiction,
-end
-
-theorem lookup_same_hd
-  {t: Type} {xs Γ: cx t} {x: var} {v v': t}
-  (Γ_is: Γ = (x, v) :: xs)
-  (h: lookup Γ x v')
-  : v = v' :=
-begin
-  induction h,
-  exact symm (prod.mk.inj (list.cons.inj Γ_is).left).right,
-  let bad := symm (prod.mk.inj (list.cons.inj Γ_is).left).left,
-  contradiction,
-end
-
-theorem inversion_lookup
-  {t: Type} {Γ Γ': cx t} {x y: var} {vx vy: t}
-  (Γ'_is: Γ' = (y, vy) :: Γ)
-  (ne: x ≠ y)
-  (h: lookup Γ' x vx)
-  : lookup Γ x vx :=
-begin
-  induction h,
-  let bad := (prod.mk.inj (list.cons.inj Γ'_is).left).left,
-  contradiction,
-  rw (list.cons.inj Γ'_is).right at h_a_1,
-  exact h_a_1,
-end
-
-theorem useless_extra_lookup'
-  {t: Type} {ys zs: cx t} {v v1 v2: t} {y x: var}
-  (h: lookup ((y, v1) :: ys ++ (y, v2) :: zs) x v)
-  : lookup ((y, v1) :: ys ++ zs) x v :=
-begin
-  induction ys,
-  cases h,
-  exact lookup.hd zs y v,
-  exact lookup.tl zs x v y v1 h_a (inversion_lookup rfl h_a h_a_1),
-  cases h,
-  exact lookup.hd (ys_hd :: ys_tl ++ zs) y v,
-  cases ys_hd,
-  cases classical.em (x = ys_hd_fst),
-  rw symm h at ⊢ h_a_1,
-  rw lookup_same_hd rfl h_a_1,
-  exact lookup.tl ((x, v) :: ys_tl ++ zs) x v y v1 h_a (lookup.hd (ys_tl ++ zs) x v),
-  let s1 := inversion_lookup rfl h h_a_1,
-  let s2 := ys_ih (lookup.tl (ys_tl ++ (y, v2) :: zs) x v y v1 h_a s1),
-  let s3 := inversion_lookup rfl h_a s2,
-  let s4 := lookup.tl (ys_tl ++ zs) x v ys_hd_fst ys_hd_snd h s3,
-  exact lookup.tl ((ys_hd_fst, ys_hd_snd) :: ys_tl ++ zs) x v y v1 h_a s4,
-end
-
-theorem useless_extra_lookup
-  {t: Type} {xs ys zs: cx t} {v v1 v2: t} {y x: var}
-  (h: lookup (xs ++ (y, v1) :: ys ++ (y, v2) :: zs) x v)
-  : lookup (xs ++ (y, v1) :: ys ++ zs) x v :=
-begin
-  induction xs,
-  simp [list.append] at ⊢ h,
-  exact useless_extra_lookup' h,
-  cases xs_hd,
-  let Γ := xs_tl ++ (y, v1) :: ys ++ zs,
-  cases classical.em (x = xs_hd_fst),
-  rw symm h_1 at h ⊢,
-  rw lookup_same_hd rfl h,
-  exact lookup.hd Γ x v,
-  let s1 := inversion_lookup rfl h_1 h,
-  let s2 := xs_ih s1,
-  exact lookup.tl Γ x v xs_hd_fst xs_hd_snd h_1 s2,
-end
-
-theorem useless_extra
-  {ys zs Γ: cx typ} {e: exp} {τ τ1 τ2: typ} {x: var}
-  {Γ_is: Γ = (x, τ1) :: ys ++ (x, τ2) :: zs}
-  (h: has_typ Γ e τ)
-  : has_typ ((x, τ1) :: ys ++ zs) e τ :=
-begin
-  induction h,
-  exact has_typ.int,
-  exact has_typ.true,
-  exact has_typ.false,
-  exact has_typ.if_ (@h_ih_a Γ_is) (@h_ih_a_1 Γ_is) (@h_ih_a_2 Γ_is),
-  rw Γ_is at h_a,
-  cases classical.em (x = h_x),
-  cases h_a,
-  exact has_typ.var (useless_extra_lookup' h_a),
-  exfalso,
-  exact h_a_a (symm h),
-  let h': h_x ≠ x := fun x, h (symm x),
-  let tl := ys ++ (x, τ2) :: zs,
-  let s1 := inversion_lookup rfl h' h_a,
-  let s2 := lookup.tl tl h_x h_τ x τ1 h' s1,
-  exact has_typ.var (useless_extra_lookup' s2),
-  sorry,
-  sorry,
-end
-
 theorem subst_preservation
   {Γ Γ': cx typ}
   {e ex e': exp}
   {x: var}
   {τ τx: typ}
-  {is_cons: Γ' = (x, τx) :: Γ}
+  (Γ'_is: Γ' = cx.insert x τx Γ)
   (no_fv: fv ex = [])
   (et: has_typ Γ' e τ)
-  (e't: has_typ Γ ex τx)
+  (ext: has_typ Γ ex τx)
   (sub: subst ex x e no_fv = e')
   : has_typ Γ e' τ :=
 begin
@@ -259,27 +94,14 @@ begin
   exact has_typ.int,
   exact has_typ.true,
   exact has_typ.false,
-  -- a bit odd
-  let a := et_ih_a e't rfl,
-  let b := et_ih_a_1 e't rfl,
-  let c := et_ih_a_2 e't rfl,
+  let a := et_ih_a Γ'_is ext rfl,
+  let b := et_ih_a_1 Γ'_is ext rfl,
+  let c := et_ih_a_2 Γ'_is ext rfl,
   exact has_typ.if_ a b c,
-  exact is_cons,
-  exact is_cons,
-  exact is_cons,
-  rw is_cons at et_a,
-  cases et_a,
-  simp [subst],
-  exact e't,
-  simp [subst, et_a_a],
-  exact has_typ.var et_a_a_1,
   cases classical.em (x = et_x),
-  rw is_cons at et_a,
-  rw h at ⊢ et_a,
+  rw h,
   simp [subst],
   sorry,
-  simp [subst, h],
-  let hm := et_ih e't rfl,
   sorry,
   sorry,
   sorry,

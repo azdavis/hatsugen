@@ -13,11 +13,11 @@ inductive has_typ: cx typ -> exp -> typ -> Prop
     has_typ Γ (exp.if_ e1 e2 e3) τ
 | var
     {Γ: cx typ} {x: var} {τ: typ}:
-    lookup Γ x τ ->
+    cx.lookup Γ x = some τ ->
     has_typ Γ (exp.var x) τ
 | fn
     {Γ: cx typ} {x: var} {τ1 τ2: typ} {e: exp}:
-    has_typ ((x, τ1) :: Γ) e τ2 ->
+    has_typ (cx.insert x τ1 Γ) e τ2 ->
     has_typ Γ (exp.fn x τ1 e) (typ.arrow τ1 τ2)
 | app
     {Γ: cx typ} {e1 e2: exp} {τ1 τ2: typ}:

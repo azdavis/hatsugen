@@ -1,9 +1,6 @@
 import defs.syntax
 import defs.fv
 
-def all_vars (Δ: cx exp) (e: exp): list var :=
-  list.foldr (fun a s, fv (prod.snd a) ++ s) (fv e) Δ
-
 def subst (ex: exp) (x: var) (e: exp) (_: fv ex = []): exp :=
   exp.rec_on e
   -- int
