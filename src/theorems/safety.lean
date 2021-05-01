@@ -1,5 +1,6 @@
-import lemmas.helpers
 import lemmas.canonical_forms
+import lemmas.fv
+import lemmas.helpers
 import lemmas.inversion
 
 theorem progress
