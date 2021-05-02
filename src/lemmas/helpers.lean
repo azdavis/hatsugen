@@ -4,30 +4,6 @@ import defs.statics
 import lemmas.cx
 import util.list
 
-theorem has_typ_unique {Γ: cx typ} {e: exp} {τ τ': typ}:
-  has_typ Γ e τ ->
-  has_typ Γ e τ' ->
-  τ = τ' :=
-begin
-  intros h1 h2,
-  induction h1 generalizing τ',
-  cases h2,
-  refl,
-  cases h2,
-  refl,
-  cases h2,
-  refl,
-  cases h2,
-  exact h1_ih_a_1 h2_a_1,
-  cases h2,
-  rw h1_a at h2_a,
-  exact option.some.inj h2_a,
-  cases h2,
-  rw h1_ih h2_a,
-  cases h2,
-  exact (typ.arrow.inj (h1_ih_a h2_a)).right,
-end
-
 theorem subst_preservation
   {Γ Γ': cx typ}
   {e ex e': exp}
