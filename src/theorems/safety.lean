@@ -7,7 +7,7 @@ theorem progress
   {Γ: cx typ}
   {e: exp}
   {τ: typ}
-  (no_fv_e: fv e = [])
+  (fv_e: fv e = [])
   (et: has_typ Γ e τ)
   : val e ∨ (∃ (e': exp), steps e e') :=
 begin
@@ -19,7 +19,7 @@ begin
   left,
   exact val.false,
   right,
-  let emp := iff.elim_left (if_fv_empty et_e1 et_e2 et_e3) no_fv_e,
+  let emp := iff.elim_left (if_fv_empty et_e1 et_e2 et_e3) fv_e,
   cases et_ih_a emp.left,
   cases bool_canonical_forms h et_a,
   rw h_1,
@@ -31,12 +31,12 @@ begin
   cases h,
   existsi exp.if_ h_w et_e2 et_e3,
   exact steps.if_e1 h_h,
-  simp [fv] at no_fv_e,
+  simp [fv] at fv_e,
   exfalso,
-  exact no_fv_e,
+  exact fv_e,
   left,
   exact val.fn et_x et_τ1 et_e,
-  let emp := iff.elim_left (app_fv_empty et_e1 et_e2) no_fv_e,
+  let emp := iff.elim_left (app_fv_empty et_e1 et_e2) fv_e,
   cases et_ih_a emp.left,
   cases et_ih_a_1 emp.right,
   cases arrow_canonical_forms h et_a,
@@ -61,32 +61,32 @@ theorem preservation
   {Γ: cx typ}
   {e e': exp}
   {τ: typ}
-  (no_fv_e: fv e = [])
+  (fv_e: fv e = [])
   (et: has_typ Γ e τ)
   (st: steps e e')
   : has_typ Γ e' τ ∧ fv e' = [] :=
 begin
   induction st generalizing Γ τ,
   let inv := inversion_if et,
-  let emp := iff.elim_left (if_fv_empty st_e1 st_e2 st_e3) no_fv_e,
+  let emp := iff.elim_left (if_fv_empty st_e1 st_e2 st_e3) fv_e,
   let e1'_ih := st_ih emp.left inv.left,
   split,
   exact has_typ.if_ e1'_ih.left inv.right.left inv.right.right,
   exact iff.elim_right (if_fv_empty st_e1' st_e2 st_e3) (and.intro e1'_ih.right emp.right),
   let inv := inversion_if et,
-  let emp := iff.elim_left (if_fv_empty exp.true st_e2 st_e3) no_fv_e,
+  let emp := iff.elim_left (if_fv_empty exp.true st_e2 st_e3) fv_e,
   exact and.intro inv.right.left emp.right.left,
   let inv := inversion_if et,
-  let emp := iff.elim_left (if_fv_empty exp.false st_e2 st_e3) no_fv_e,
+  let emp := iff.elim_left (if_fv_empty exp.false st_e2 st_e3) fv_e,
   exact and.intro inv.right.right emp.right.right,
   cases inversion_app et,
-  let emp := iff.elim_left (app_fv_empty st_e1 st_e2) no_fv_e,
+  let emp := iff.elim_left (app_fv_empty st_e1 st_e2) fv_e,
   let e1'_ih := st_ih emp.left h.left,
   split,
   exact has_typ.app e1'_ih.left h.right,
   exact iff.elim_right (app_fv_empty st_e1' st_e2) (and.intro e1'_ih.right emp.right),
   cases inversion_app et,
-  let emp := iff.elim_left (app_fv_empty st_e1 st_e2) no_fv_e,
+  let emp := iff.elim_left (app_fv_empty st_e1 st_e2) fv_e,
   let e2'_ih := st_ih emp.right h.right,
   split,
   exact has_typ.app h.left e2'_ih.left,
@@ -97,7 +97,7 @@ begin
   let a := typ.arrow.inj h_1.left,
   rw a.left at h,
   rw a.right,
-  exact subst_preservation rfl st_h h_1.right h.right,
+  exact subst_preservation rfl st_fv_e2 h_1.right h.right,
   sorry,
 end
 

@@ -10,10 +10,10 @@ theorem subst_preservation
   {x: var}
   {τ τx: typ}
   (Γ'_is: Γ' = cx.insert x τx Γ)
-  (no_fv: fv ex = [])
+  (fv_ex: fv ex = [])
   (et: has_typ Γ' e τ)
   (ext: has_typ Γ ex τx)
-  : has_typ Γ (subst ex x e no_fv) τ :=
+  : has_typ Γ (subst ex x e fv_ex) τ :=
 begin
   induction et,
   exact has_typ.int,
