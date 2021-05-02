@@ -6,24 +6,22 @@ import util.list
 
 theorem subst_preservation
   {Γ Γ': cx typ}
-  {e ex e': exp}
+  {e ex: exp}
   {x: var}
   {τ τx: typ}
   (Γ'_is: Γ' = cx.insert x τx Γ)
   (no_fv: fv ex = [])
   (et: has_typ Γ' e τ)
   (ext: has_typ Γ ex τx)
-  (sub: subst ex x e no_fv = e')
-  : has_typ Γ e' τ :=
+  : has_typ Γ (subst ex x e no_fv) τ :=
 begin
-  rw symm sub,
-  induction et generalizing e' Γ,
+  induction et,
   exact has_typ.int,
   exact has_typ.true,
   exact has_typ.false,
-  let a := et_ih_a Γ'_is ext rfl,
-  let b := et_ih_a_1 Γ'_is ext rfl,
-  let c := et_ih_a_2 Γ'_is ext rfl,
+  let a := et_ih_a Γ'_is,
+  let b := et_ih_a_1 Γ'_is,
+  let c := et_ih_a_2 Γ'_is,
   exact has_typ.if_ a b c,
   rw Γ'_is at et_a,
   cases classical.em (x = et_x),
@@ -46,7 +44,7 @@ begin
   simp [subst],
   simp [h],
   sorry,
-  let a := et_ih_a Γ'_is ext rfl,
-  let b := et_ih_a_1 Γ'_is ext rfl,
+  let a := et_ih_a Γ'_is,
+  let b := et_ih_a_1 Γ'_is,
   exact has_typ.app a b,
 end

@@ -97,7 +97,7 @@ begin
   let a := typ.arrow.inj h_1.left,
   rw a.left at h,
   rw a.right,
-  exact subst_preservation rfl st_h h_1.right h.right rfl,
+  exact subst_preservation rfl st_h h_1.right h.right,
   sorry,
 end
 
