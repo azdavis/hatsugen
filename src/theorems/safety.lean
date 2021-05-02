@@ -91,6 +91,13 @@ begin
   split,
   exact has_typ.app h.left e2'_ih.left,
   exact iff.elim_right (app_fv_empty st_e1 st_e2') (and.intro emp.left e2'_ih.right),
+  split,
+  cases inversion_app et,
+  cases inversion_fn h.left,
+  let a := typ.arrow.inj h_1.left,
+  rw a.left at h,
+  rw a.right,
+  exact subst_preservation rfl st_h h_1.right h.right rfl,
   sorry,
 end
 

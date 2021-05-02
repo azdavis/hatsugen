@@ -24,3 +24,15 @@ begin
   exact et_a,
   exact et_a_1,
 end
+
+theorem inversion_fn
+  {Γ: cx typ} {x: var} {τ1 τ: typ} {e: exp}
+  (et: has_typ Γ (exp.fn x τ1 e) τ)
+  : ∃ (τ2: typ), τ = typ.arrow τ1 τ2 ∧ has_typ (cx.insert x τ1 Γ) e τ2 :=
+begin
+  cases et,
+  existsi et_τ2,
+  split,
+  refl,
+  exact et_a,
+end
