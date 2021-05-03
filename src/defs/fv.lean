@@ -15,6 +15,6 @@ def fv (e: exp): list var :=
   -- var
   (fun x, [x])
   -- fn
-  (fun x _ _, list.filter (fun y, x ≠ y))
+  (fun x _ _, list.filter (ne x))
   -- app
   (fun _ _ s1 s2, s1 ++ s2)
