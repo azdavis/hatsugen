@@ -1,13 +1,21 @@
 import defs.syntax
 import defs.fv
 
+theorem if_fv (e1 e2 e3: exp):
+  fv (exp.if_ e1 e2 e3) = fv e1 ++ (fv e2 ++ fv e3)
+  := by simp [fv]
+
+theorem app_fv (e1 e2: exp):
+  fv (exp.app e1 e2) = fv e1 ++ fv e2
+  := by simp [fv]
+
 theorem if_fv_empty
   (e1 e2 e3: exp)
   : fv (exp.if_ e1 e2 e3) = [] ↔ (fv e1 = [] ∧ fv e2 = [] ∧ fv e3 = []) :=
 begin
   split,
   intro h,
-  simp [fv] at h,
+  rw if_fv e1 e2 e3 at h,
   let ap := iff.elim_left (append_nil_both (fv e1) (fv e2 ++ fv e3)) h,
   split,
   exact ap.left,
@@ -15,7 +23,7 @@ begin
   intro h,
   cases h,
   cases h_right,
-  simp [fv] at *,
+  rw if_fv e1 e2 e3 at *,
   rw h_left,
   rw h_right_left,
   rw h_right_right,
@@ -28,11 +36,11 @@ theorem app_fv_empty
 begin
   split,
   intro h,
-  simp [fv],
+  rw app_fv e1 e2 at h,
   exact iff.elim_left (append_nil_both (fv e1) (fv e2)) h,
   intro h,
   cases h,
-  simp [fv] at *,
+  rw app_fv e1 e2 at *,
   rw h_left,
   rw h_right,
   simp [list.append],
