@@ -13,7 +13,7 @@ theorem subst_preservation
   (fv_ex: fv ex = [])
   (et: has_typ Γ' e τ)
   (ext: has_typ Γ ex τx)
-  : has_typ Γ (subst ex x e fv_ex) τ :=
+  : has_typ Γ (subst ex x fv_ex e) τ :=
 begin
   induction et,
   exact has_typ.int,

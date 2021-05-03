@@ -30,4 +30,4 @@ inductive steps: exp -> exp -> Prop
 | app_done
     {x: var} {τ: typ} {e e2: exp} (fv_e2: fv e2 = []):
     val e2 ->
-    steps (exp.app (exp.fn x τ e) e2) (subst e2 x e fv_e2)
+    steps (exp.app (exp.fn x τ e) e2) (subst e2 x fv_e2 e)
