@@ -15,13 +15,13 @@ theorem subst_preservation
   (ext: has_typ Γ ex τx)
   : has_typ Γ (subst ex x fv_ex e) τ :=
 begin
-  induction et,
+  induction et generalizing Γ,
   exact has_typ.int,
   exact has_typ.true,
   exact has_typ.false,
-  let a := et_ih_a Γ'_is,
-  let b := et_ih_a_1 Γ'_is,
-  let c := et_ih_a_2 Γ'_is,
+  let a := et_ih_a Γ'_is ext,
+  let b := et_ih_a_1 Γ'_is ext,
+  let c := et_ih_a_2 Γ'_is ext,
   exact has_typ.if_ a b c,
   rw Γ'_is at et_a,
   cases classical.em (x = et_x),
@@ -44,7 +44,7 @@ begin
   simp [subst],
   simp [h],
   sorry,
-  let a := et_ih_a Γ'_is,
-  let b := et_ih_a_1 Γ'_is,
+  let a := et_ih_a Γ'_is ext,
+  let b := et_ih_a_1 Γ'_is ext,
   exact has_typ.app a b,
 end
