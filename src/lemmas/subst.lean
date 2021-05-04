@@ -65,6 +65,19 @@ theorem app_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e1 e2: exp):
     (subst ex x fv_ex e2)
   := by simp [subst]
 
+theorem fn_subst (ex: exp) (x: var) (fv_ex: fv ex = [])
+  (y: var) (τ: typ) (e: exp):
+  subst ex x fv_ex (exp.fn y τ e) =
+  exp.fn y τ (if x = y then e else subst ex x fv_ex e) :=
+begin
+  simp [subst],
+  -- super weird... at this point the lhs and rhs are equal so we should be
+  -- done by refl but it doesn't work. but this does...?
+  cases decidable.em (x = y),
+  simp [h],
+  simp [h],
+end
+
 theorem subst_fv (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
   fv (subst ex x fv_ex e) = list.filter (ne x) (fv e) :=
 begin
@@ -86,7 +99,17 @@ begin
   simp [list.filter, subst],
   exact fv_ex,
   simp [h],
-  sorry,
+  rw fn_subst,
+  rw fn_fv,
+  rw fn_fv,
+  cases decidable.em (x = e_a),
+  -- can't just `simp [h]` or else weird stuff happens with mismatched types
+  rw h,
+  simp,
+  exact symm (filter_idempotent (ne e_a) (fv e_a_2)),
+  simp [h],
+  simp [e_ih],
+  exact filter_comm (ne e_a) (ne x) (fv e_a_2),
   rw app_subst ex x fv_ex e_a e_a_1,
   rw app_fv (s e_a) (s e_a_1),
   rw e_ih_a,

@@ -62,6 +62,21 @@ begin
   exact h_ih,
 end
 
+theorem filter_idempotent {t: Type} (p: t -> Prop) (xs: list t)
+  [decidable_pred p]:
+  list.filter p (list.filter p xs) = list.filter p xs :=
+begin
+  sorry
+end
+
+theorem filter_comm {t: Type} (p p': t -> Prop) (xs: list t)
+  [decidable_pred p]
+  [decidable_pred p']:
+  list.filter p (list.filter p' xs) = list.filter p' (list.filter p xs) :=
+begin
+  sorry
+end
+
 theorem append_nil_both
   {t: Type} (xs ys: list t): xs ++ ys = [] ↔ xs = [] ∧ ys = [] :=
 begin
