@@ -117,3 +117,31 @@ begin
   simp [h, h_1],
   exact xs_ih,
 end
+
+theorem not_filter {t: Type} {p: t -> Prop} {xs: list t} {x: t}
+  [decidable_pred p]
+  [decidable_eq t]:
+  x ∉ list.filter p xs ->
+  p x ->
+  x ∉ xs :=
+begin
+  intros x_notin px,
+  induction xs,
+  exact list.not_mem_nil x,
+  simp [list.filter] at x_notin,
+  cases decidable.em (x = xs_hd),
+  rw h at x_notin px,
+  simp [px] at x_notin,
+  exfalso,
+  exact x_notin,
+  simp,
+  intro a,
+  cases a,
+  exact h a,
+  cases decidable.em (p xs_hd),
+  simp [h_1] at x_notin,
+  let b := fun a, x_notin (or.inr a),
+  exact xs_ih b a,
+  simp [h_1] at x_notin,
+  exact xs_ih x_notin a,
+end
