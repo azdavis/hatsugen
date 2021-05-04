@@ -66,7 +66,14 @@ theorem filter_idempotent {t: Type} (p: t -> Prop) (xs: list t)
   [decidable_pred p]:
   list.filter p (list.filter p xs) = list.filter p xs :=
 begin
-  sorry
+  induction xs,
+  simp [list.filter],
+  simp [list.filter],
+  cases decidable.em (p xs_hd),
+  simp [h],
+  exact xs_ih,
+  simp [h],
+  exact xs_ih,
 end
 
 theorem filter_comm {t: Type} (p p': t -> Prop) (xs: list t)
@@ -74,7 +81,20 @@ theorem filter_comm {t: Type} (p p': t -> Prop) (xs: list t)
   [decidable_pred p']:
   list.filter p (list.filter p' xs) = list.filter p' (list.filter p xs) :=
 begin
-  sorry
+  induction xs,
+  simp [list.filter],
+  simp [list.filter],
+  cases decidable.em (p xs_hd),
+  cases decidable.em (p' xs_hd),
+  simp [h, h_1],
+  exact xs_ih,
+  simp [h, h_1],
+  exact xs_ih,
+  cases decidable.em (p' xs_hd),
+  simp [h, h_1],
+  exact xs_ih,
+  simp [h, h_1],
+  exact xs_ih,
 end
 
 theorem append_nil_both
