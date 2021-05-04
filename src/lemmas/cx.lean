@@ -23,7 +23,7 @@ begin
   simp [h],
   cases Γ_nodupkeys,
   cases Γ_entries_hd,
-  cases classical.em (x = Γ_entries_hd_fst),
+  cases decidable.em (x = Γ_entries_hd_fst),
   rw h_1,
   simp [cx.lookup],
   simp [h],

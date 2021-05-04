@@ -20,9 +20,7 @@ begin
   exfalso,
   exact h,
   simp [list.filter] at h,
-  -- maybe could use decidable_pred p here somehow to have a justification for
-  -- using excluded middle?
-  cases classical.em (p xs_hd),
+  cases decidable.em (p xs_hd),
   simp [h_1] at h,
   cases h,
   rw h,
@@ -55,7 +53,7 @@ begin
   simp [list.filter],
   exact pairwise.nil r,
   simp [list.filter],
-  cases classical.em (p h_x),
+  cases decidable.em (p h_x),
   simp [h],
   let f: ∀ (y: t), y ∈ list.filter p h_xs -> r h_x y := fun a, fun b,
     h_a a (filter_spec p h_xs a b).left,
