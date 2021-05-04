@@ -1,5 +1,6 @@
 import defs.syntax
 
+-- Γ ⊢ e : τ
 inductive has_typ: cx typ -> exp -> typ -> Prop
 | int {Γ: cx typ} {n: ℤ}: has_typ Γ (exp.int n) typ.int
 | true {Γ: cx typ}: has_typ Γ exp.true typ.bool

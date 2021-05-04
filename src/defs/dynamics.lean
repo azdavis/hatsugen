@@ -1,12 +1,14 @@
 import defs.syntax
 import defs.subst
 
+-- e val
 inductive val: exp -> Prop
 | int (n: ℤ): val (exp.int n)
 | true: val exp.true
 | false: val exp.false
 | fn (x: var) (τ: typ) (e: exp): val (exp.fn x τ e)
 
+-- e ↦ e'
 inductive steps: exp -> exp -> Prop
 | if_e1
     {e1 e2 e3 e1': exp}:

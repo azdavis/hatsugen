@@ -1,6 +1,7 @@
 import defs.syntax
 import defs.var
 
+-- free variables
 @[reducible]
 def fv (e: exp): list var :=
   exp.rec_on e

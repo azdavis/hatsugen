@@ -1,6 +1,6 @@
 import util.list
 
--- any type with infinite values would work
+-- variables. any type with infinite values would work
 @[reducible]
 def var: Type := ℕ
 

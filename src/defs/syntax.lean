@@ -1,10 +1,12 @@
 import defs.var
 
+-- types
 inductive typ: Type
 | int: typ
 | bool: typ
 | arrow: typ -> typ -> typ
 
+-- expressions
 inductive exp: Type
 | int: ℤ -> exp
 | true: exp
