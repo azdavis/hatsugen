@@ -38,7 +38,24 @@ theorem weakening {Γ: cx typ} {e: exp} {τ: typ} (x: var) (τx: typ):
   has_typ Γ e τ ->
   has_typ (cx.insert x τx Γ) e τ :=
 begin
-  sorry
+  intros fv_e et,
+  induction et,
+  exact has_typ.int,
+  exact has_typ.true,
+  exact has_typ.false,
+  rw if_fv at fv_e,
+  simp [list.append] at fv_e,
+  let t_e1 := et_ih_a (fun a, fv_e (or.inl a)),
+  let t_e2 := et_ih_a_1 (fun a, fv_e (or.inr (or.inl a))),
+  let t_e3 := et_ih_a_2 (fun a, fv_e (or.inr (or.inr a))),
+  exact has_typ.if_ t_e1 t_e2 t_e3,
+  sorry,
+  sorry,
+  rw app_fv at fv_e,
+  simp [list.append] at fv_e,
+  let t_e1 := et_ih_a (fun a, fv_e (or.inl a)),
+  let t_e2 := et_ih_a_1 (fun a, fv_e (or.inr a)),
+  exact has_typ.app t_e1 t_e2,
 end
 
 theorem subst_preservation
