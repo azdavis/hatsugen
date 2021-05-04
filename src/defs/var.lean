@@ -1,10 +1,8 @@
 import util.list
 
 -- variables. any type with infinite values would work
-@[reducible]
 def var: Type := ℕ
 
-@[reducible]
 def ne_fst {t: Type} (a: prod var t) (b: prod var t): Prop :=
   a.fst ≠ b.fst
 
@@ -12,10 +10,8 @@ structure cx (t: Type): Type :=
   (entries: list (prod var t))
   (nodupkeys: pairwise ne_fst entries)
 
-@[reducible]
 def cx.empty {t: Type}: cx t := cx.mk [] (pairwise.nil ne_fst)
 
-@[reducible]
 def cx.lookup {t: Type} (Γ: cx t) (x: var): option t :=
 begin
   cases Γ,
