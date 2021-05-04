@@ -104,6 +104,27 @@ begin
   exact emp.left,
 end
 
+-- the big one
+theorem safety
+  {Γ: cx typ}
+  {e: exp}
+  {τ: typ}
+  (fv_e: fv e = [])
+  (et: has_typ Γ e τ)
+  : val e ∨ (∃ (e': exp), steps e e' ∧ has_typ Γ e' τ ∧ fv e' = []) :=
+begin
+  cases progress fv_e et,
+  left,
+  exact h,
+  cases h,
+  let p := preservation fv_e et h_h,
+  right,
+  existsi h_w,
+  split,
+  exact h_h,
+  exact p,
+end
+
 theorem uniqueness {Γ: cx typ} {e: exp} {τ τ': typ}:
   has_typ Γ e τ ->
   has_typ Γ e τ' ->
