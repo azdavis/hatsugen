@@ -33,6 +33,14 @@ begin
   simp [h],
 end
 
+theorem weakening {Γ: cx typ} {e: exp} {τ: typ} (x: var) (τx: typ):
+  x ∉ fv e ->
+  has_typ Γ e τ ->
+  has_typ (cx.insert x τx Γ) e τ :=
+begin
+  sorry
+end
+
 theorem subst_preservation
   {Γ Γ': cx typ}
   {e ex: exp}
@@ -72,7 +80,12 @@ begin
   exact has_typ.fn et_a,
   rw fn_subst,
   simp [h],
-  sorry,
+  rw Γ'_is at et_ih,
+  let notin_fv_ex := list.not_mem_nil et_x,
+  rw symm fv_ex at notin_fv_ex,
+  let ext' := weakening et_x et_τ1 notin_fv_ex ext,
+  let a := et_ih (insert_comm Γ et_x x et_τ1 τx) ext',
+  exact has_typ.fn a,
   let a := et_ih_a Γ'_is ext,
   let b := et_ih_a_1 Γ'_is ext,
   exact has_typ.app a b,
