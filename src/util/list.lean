@@ -10,6 +10,27 @@ begin
   exact h_a_1,
 end
 
+theorem append_nil_both
+  {t: Type} (xs ys: list t): xs ++ ys = [] ↔ xs = [] ∧ ys = [] :=
+begin
+  split,
+  intro h,
+  induction xs,
+  induction ys,
+  split,
+  refl,
+  refl,
+  split,
+  refl,
+  cases h,
+  cases h,
+  intro h,
+  cases h,
+  rw h_left,
+  rw h_right,
+  simp [list.append],
+end
+
 theorem filter_spec {t: Type} (p: t -> Prop) (xs: list t)
   [decidable_pred p]:
   ∀ x ∈ list.filter p xs, (x ∈ xs) ∧ (p x) :=
@@ -95,25 +116,4 @@ begin
   exact xs_ih,
   simp [h, h_1],
   exact xs_ih,
-end
-
-theorem append_nil_both
-  {t: Type} (xs ys: list t): xs ++ ys = [] ↔ xs = [] ∧ ys = [] :=
-begin
-  split,
-  intro h,
-  induction xs,
-  induction ys,
-  split,
-  refl,
-  refl,
-  split,
-  refl,
-  cases h,
-  cases h,
-  intro h,
-  cases h,
-  rw h_left,
-  rw h_right,
-  simp [list.append],
 end
