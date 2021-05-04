@@ -2,7 +2,6 @@ inductive pairwise {t: Type} (r: t -> t -> Prop): list t → Prop
 | nil: pairwise []
 | cons {x: t} {xs: list t}: (∀ y ∈ xs, r x y) -> pairwise xs -> pairwise (x :: xs)
 
--- don't know why this is necessary
 theorem pairwise_inversion {t: Type} {r: t -> t -> Prop} {x: t} {xs: list t}:
   pairwise r (x :: xs) -> pairwise r xs :=
 begin

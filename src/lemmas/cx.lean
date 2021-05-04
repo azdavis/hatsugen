@@ -22,7 +22,6 @@ begin
   simp [cx.lookup],
   simp [h],
   cases Γ_nodupkeys,
-  -- let hm := Γ_entries_ih Γ_nodupkeys_a_1,
   cases Γ_entries_hd,
   cases classical.em (x = Γ_entries_hd_fst),
   rw h_1,

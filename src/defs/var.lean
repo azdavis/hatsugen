@@ -25,6 +25,7 @@ begin
   exact (if x = Γ_entries_hd_fst then
     some Γ_entries_hd_snd
   else
+    -- avoid weird 'can only eliminate into Prop' error when trying to use cases
     Γ_entries_ih (pairwise_inversion Γ_nodupkeys)
   ),
 end
