@@ -98,7 +98,10 @@ begin
   rw a.left at h,
   rw a.right,
   exact subst_preservation rfl st_fv_e2 h_1.right h.right,
-  sorry,
+  rw subst_fv st_e2 st_x st_fv_e2 st_e,
+  let emp := iff.elim_left (app_fv_empty (exp.fn st_x st_τ st_e) st_e2) fv_e,
+  rw fn_fv st_x st_τ st_e at emp,
+  exact emp.left,
 end
 
 theorem uniqueness {Γ: cx typ} {e: exp} {τ τ': typ}:
