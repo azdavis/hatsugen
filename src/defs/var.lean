@@ -43,7 +43,8 @@ begin
 end
 
 instance cx_has_insert {t: Type}: has_insert (prod var t) (cx t) :=
-  has_insert.mk (fun a, fun Γ, begin
+  has_insert.mk begin
+    intros a Γ,
     cases a,
     exact cx.insert a_fst a_snd Γ
-  end)
+  end
