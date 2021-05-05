@@ -148,9 +148,8 @@ end
 
 def ord_insert
   {t: Type}
-  [linear_order t]
-  [decidable_rel ((≤): t -> t -> Prop)]
-  [is_trans t (≤)]
+  [has_le t]
+  [@decidable_rel t has_le.le]
   (x: t)
 : list t -> list t
 | [] := [x]
@@ -158,20 +157,20 @@ def ord_insert
 
 def insertion_sort
   {t: Type}
-  [linear_order t]
-  [decidable_rel ((≤): t -> t -> Prop)]
-  [is_trans t (≤)]
+  [has_le t]
+  [@decidable_rel t has_le.le]
 : list t -> list t
 | [] := []
 | (x :: xs) := ord_insert x (insertion_sort xs)
 
-def sorted {t: Type} [preorder t]: list t -> Prop := pairwise (≤)
+def sorted {t: Type} [has_le t]: list t -> Prop := pairwise (≤)
 
 theorem ord_insert_mem
   {t: Type}
-  [linear_order t]
-  [decidable_rel ((≤): t -> t -> Prop)]
-  [is_trans t (≤)]
+  [has_le t]
+  [@decidable_rel t has_le.le]
+  [is_trans t has_le.le]
+  [is_total t has_le.le]
   {x: t} {xs: list t}:
   ∀ (y ∈ ord_insert x xs), y = x ∨ y ∈ xs :=
 begin
@@ -197,9 +196,10 @@ end
 
 theorem ord_insert_spec
   {t: Type}
-  [linear_order t]
-  [decidable_rel ((≤): t -> t -> Prop)]
-  [is_trans t (≤)]
+  [has_le t]
+  [@decidable_rel t has_le.le]
+  [is_trans t has_le.le]
+  [is_total t has_le.le]
   (x: t) (xs: list t):
   sorted xs -> sorted (ord_insert x xs) :=
 begin
@@ -221,7 +221,10 @@ begin
   begin
     cases ord_insert_mem a b,
     rw h_1,
-    exact le_of_not_le h,
+    cases is_total.total (≤) x h_x,
+    exfalso,
+    exact h h_2,
+    exact h_2,
     exact h_a a h_1,
   end,
   exact pairwise.cons b h_ih,
@@ -229,9 +232,10 @@ end
 
 theorem insertion_sort_spec
   {t: Type}
-  [linear_order t]
-  [decidable_rel ((≤): t -> t -> Prop)]
-  [is_trans t (≤)]
+  [has_le t]
+  [@decidable_rel t has_le.le]
+  [is_trans t has_le.le]
+  [is_total t has_le.le]
   (xs: list t):
   sorted (insertion_sort xs) :=
 begin
