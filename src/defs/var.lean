@@ -1,6 +1,7 @@
 import util.list.filter
 
--- variables. any type with infinite values would work
+-- variables. any type with infinite values and a well-behaved ≤ would work
+@[reducible]
 def var: Type := ℕ
 
 structure cx_elem (t: Type): Type :=
@@ -9,6 +10,32 @@ structure cx_elem (t: Type): Type :=
 
 def ne_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
   a.x ≠ b.x
+
+def le_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
+  a.x ≤ b.x
+
+instance cx_elem_has_le {t: Type}: has_le (cx_elem t) := has_le.mk le_var
+
+instance le_var_decidable {t: Type}: @decidable_rel (cx_elem t) le_var :=
+begin
+  intros a b,
+  simp [le_var],
+  exact nat.decidable_le a.x b.x,
+end
+
+instance le_var_trans {t: Type}: is_trans (cx_elem t) le_var := is_trans.mk
+begin
+  intros a b c ha hb,
+  simp [le_var] at *,
+  exact is_trans.trans a.x b.x c.x ha hb,
+end
+
+instance le_var_total {t: Type}: is_total (cx_elem t) le_var := is_total.mk
+begin
+  intros a b,
+  simp [le_var],
+  exact linear_order.le_total a.x b.x,
+end
 
 structure cx (t: Type): Type :=
   (entries: list (cx_elem t))
