@@ -99,3 +99,117 @@ begin
   simp [insertion_sort],
   exact ord_insert_spec xs_hd (insertion_sort xs_tl) xs_ih,
 end
+
+theorem insert_mem {t: Type} {xs: list t} {x y: t}
+  [has_le t] [@decidable_rel t has_le.le]:
+  x ∈ ord_insert y xs ->
+  x = y ∨ x ∈ xs :=
+begin
+  intro in_ins,
+  induction xs,
+  simp [ord_insert] at in_ins,
+  left,
+  exact in_ins,
+  simp [ord_insert] at in_ins,
+  cases decidable.em (y ≤ xs_hd),
+  simp [h] at in_ins,
+  exact in_ins,
+  simp [h] at in_ins,
+  cases in_ins,
+  right,
+  simp,
+  left,
+  exact in_ins,
+  cases xs_ih in_ins,
+  left,
+  exact h_1,
+  right,
+  simp,
+  right,
+  exact h_1,
+end
+
+theorem insert_pred {t: Type} {p: t -> Prop} {xs: list t} {x: t}
+  [has_le t] [@decidable_rel t has_le.le]:
+  (∀ (y ∈ xs), p y) ->
+  p x ->
+  (∀ (y ∈ ord_insert x xs), p y) :=
+begin
+  intros in_xs r_xx y in_insert,
+  induction xs,
+  simp [ord_insert] at in_insert,
+  rw in_insert,
+  exact r_xx,
+  simp [ord_insert] at in_insert,
+  cases decidable.em (x ≤ xs_hd),
+  simp [h] at in_insert,
+  cases in_insert,
+  rw in_insert,
+  exact r_xx,
+  cases in_insert,
+  rw in_insert,
+  exact in_xs xs_hd (or.inl rfl),
+  exact in_xs y (or.inr in_insert),
+  simp [h] at in_insert,
+  cases in_insert,
+  rw in_insert,
+  exact in_xs xs_hd (or.inl rfl),
+  let in_xs' := fun y, fun h, in_xs y (or.inr h),
+  exact xs_ih in_xs' in_insert,
+end
+
+theorem insert_pairwise {t: Type} {r: t -> t -> Prop} {xs: list t} {x: t}
+  [is_symm t r] [has_le t] [@decidable_rel t has_le.le]:
+  (∀ (y ∈ xs), r x y) ->
+  pairwise r xs ->
+  pairwise r (ord_insert x xs) :=
+begin
+  intros in_xs pw_xs,
+  induction pw_xs,
+  simp [ord_insert],
+  exact pairwise.cons (list.ball_nil (fun y, r x y)) (pairwise.nil r),
+  simp [ord_insert],
+  cases decidable.em (x ≤ pw_xs_x),
+  simp [h],
+  let a := pairwise.cons pw_xs_a pw_xs_a_1,
+  exact pairwise.cons in_xs a,
+  simp [h],
+  let in_xs' := fun y, fun h, in_xs y (or.inr h),
+  let a := pw_xs_ih in_xs',
+  let b := in_xs pw_xs_x (or.inl rfl),
+  let c := insert_pred pw_xs_a (symm b),
+  exact pairwise.cons c a,
+end
+
+theorem sort_pred {t: Type} {p: t -> Prop} {xs: list t}
+  [has_le t] [@decidable_rel t has_le.le]:
+  (∀ (y ∈ xs), p y) ->
+  (∀ (y ∈ insertion_sort xs), p y) :=
+begin
+  intros in_xs y in_sort,
+  induction xs,
+  simp [insertion_sort] at in_sort,
+  exfalso,
+  exact in_sort,
+  simp [insertion_sort] at in_sort,
+  cases insert_mem in_sort,
+  rw h,
+  exact in_xs xs_hd (or.inl rfl),
+  let in_xs' := fun y, fun h, in_xs y (or.inr h),
+  exact xs_ih in_xs' h,
+end
+
+theorem sort_pairwise {t: Type} {r: t -> t -> Prop} {xs: list t}
+  [is_symm t r] [has_le t] [@decidable_rel t has_le.le]:
+  pairwise r xs ->
+  pairwise r (insertion_sort xs) :=
+begin
+  intro h,
+  induction h,
+  simp [insertion_sort],
+  exact pairwise.nil r,
+  simp [insertion_sort],
+  let a := sort_pred h_a,
+  simp at a,
+  exact insert_pairwise a h_ih,
+end
