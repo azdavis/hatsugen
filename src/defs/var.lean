@@ -1,4 +1,5 @@
 import util.list.filter
+import util.list.sort
 
 -- variables. any type with infinite values and a well-behaved ≤ would work
 @[reducible]
@@ -68,11 +69,11 @@ def cx.insert {t: Type} (x: var) (v: t) (Γ: cx t): cx t :=
 begin
   cases Γ,
   let p: cx_elem t -> Prop := fun a, x ≠ a.x,
-  let entries' := cx_elem.mk x v :: list.filter p Γ_entries,
+  let entries' := insertion_sort (cx_elem.mk x v :: list.filter p Γ_entries),
   let f := fun a, fun b, (filter_spec p Γ_entries a b).right,
-  let nodupkeys' := @pairwise.cons
+  let nodupkeys' := sort_pairwise (@pairwise.cons
     (cx_elem t) ne_var (cx_elem.mk x v) (list.filter p Γ_entries) f
-    (filter_pairwise p Γ_nodupkeys),
+    (filter_pairwise p Γ_nodupkeys)),
   exact cx.mk entries' nodupkeys',
 end
 

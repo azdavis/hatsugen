@@ -6,8 +6,10 @@ begin
   cases Γ,
   cases Γ_entries,
   simp [cx.insert],
+  simp [insertion_sort],
+  simp [ord_insert],
   simp [cx.lookup],
-  simp [cx.lookup],
+  sorry,
 end
 
 theorem useless_insert_ne {t: Type} (Γ: cx t) (x y: var) (v: t):
@@ -19,6 +21,8 @@ begin
   cases Γ,
   induction Γ_entries,
   simp [cx.insert],
+  simp [insertion_sort],
+  simp [ord_insert],
   simp [cx.lookup],
   simp [h],
   cases Γ_nodupkeys,
