@@ -3,7 +3,6 @@ import defs.fv
 import defs.statics
 import lemmas.cx
 import lemmas.fv
-import util.list
 
 theorem if_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e1 e2 e3: exp):
   subst ex x fv_ex (exp.if_ e1 e2 e3) =

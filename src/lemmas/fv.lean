@@ -1,5 +1,6 @@
 import defs.syntax
 import defs.fv
+import util.list.append
 
 theorem if_fv (e1 e2 e3: exp):
   fv (exp.if_ e1 e2 e3) = fv e1 ++ (fv e2 ++ fv e3)

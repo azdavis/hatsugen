@@ -1,4 +1,4 @@
-import util.list
+import util.list.filter
 
 -- variables. any type with infinite values would work
 def var: Type := ℕ
