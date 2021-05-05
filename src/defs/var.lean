@@ -16,6 +16,13 @@ def le_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
 
 instance cx_elem_has_le {t: Type}: has_le (cx_elem t) := has_le.mk le_var
 
+instance ne_var_symm {t: Type}: is_symm (cx_elem t) ne_var := is_symm.mk
+begin
+  intros a b ab,
+  simp [ne_var] at *,
+  exact ne.symm ab,
+end
+
 instance le_var_decidable {t: Type}: @decidable_rel (cx_elem t) le_var :=
 begin
   intros a b,
