@@ -19,6 +19,56 @@ def insertion_sort
 
 def sorted {t: Type} [has_le t]: list t -> Prop := pairwise (≤)
 
+theorem insert_mem {t: Type} {xs: list t} {x y: t}
+  [has_le t] [@decidable_rel t has_le.le]:
+  x ∈ ord_insert y xs ↔
+  x = y ∨ x ∈ xs :=
+begin
+  split,
+  intro in_ins,
+  induction xs,
+  simp [ord_insert] at in_ins,
+  left,
+  exact in_ins,
+  simp [ord_insert] at in_ins,
+  cases decidable.em (y ≤ xs_hd),
+  simp [h] at in_ins,
+  exact in_ins,
+  simp [h] at in_ins,
+  cases in_ins,
+  right,
+  simp,
+  left,
+  exact in_ins,
+  cases xs_ih in_ins,
+  left,
+  exact h_1,
+  right,
+  simp,
+  right,
+  exact h_1,
+  intro h,
+  induction xs,
+  simp [ord_insert],
+  cases h,
+  exact h,
+  exfalso,
+  exact list.not_mem_nil x h,
+  simp [ord_insert],
+  cases decidable.em (y ≤ xs_hd),
+  simp [h_1],
+  exact h,
+  simp [h_1],
+  cases h,
+  right,
+  exact xs_ih (or.inl h),
+  cases h,
+  left,
+  exact h,
+  right,
+  exact xs_ih (or.inr h),
+end
+
 theorem ord_insert_mem
   {t: Type}
   [has_le t]
@@ -82,72 +132,6 @@ begin
   exact pairwise.cons b h_ih,
 end
 
-theorem insertion_sort_spec
-  {t: Type}
-  [has_le t]
-  [@decidable_rel t has_le.le]
-  [is_trans t has_le.le]
-  [is_total t has_le.le]
-  (xs: list t):
-  sorted (insertion_sort xs) :=
-begin
-  induction xs,
-  simp [insertion_sort],
-  exact pairwise.nil (≤),
-  simp [insertion_sort],
-  exact ord_insert_spec xs_hd (insertion_sort xs_tl) xs_ih,
-end
-
-theorem insert_mem {t: Type} {xs: list t} {x y: t}
-  [has_le t] [@decidable_rel t has_le.le]:
-  x ∈ ord_insert y xs ↔
-  x = y ∨ x ∈ xs :=
-begin
-  split,
-  intro in_ins,
-  induction xs,
-  simp [ord_insert] at in_ins,
-  left,
-  exact in_ins,
-  simp [ord_insert] at in_ins,
-  cases decidable.em (y ≤ xs_hd),
-  simp [h] at in_ins,
-  exact in_ins,
-  simp [h] at in_ins,
-  cases in_ins,
-  right,
-  simp,
-  left,
-  exact in_ins,
-  cases xs_ih in_ins,
-  left,
-  exact h_1,
-  right,
-  simp,
-  right,
-  exact h_1,
-  intro h,
-  induction xs,
-  simp [ord_insert],
-  cases h,
-  exact h,
-  exfalso,
-  exact list.not_mem_nil x h,
-  simp [ord_insert],
-  cases decidable.em (y ≤ xs_hd),
-  simp [h_1],
-  exact h,
-  simp [h_1],
-  cases h,
-  right,
-  exact xs_ih (or.inl h),
-  cases h,
-  left,
-  exact h,
-  right,
-  exact xs_ih (or.inr h),
-end
-
 theorem ord_insert_pred {t: Type} {p: t -> Prop} {xs: list t} {x: t}
   [has_le t] [@decidable_rel t has_le.le]:
   (∀ (y ∈ xs), p y) ->
@@ -198,6 +182,22 @@ begin
   let b := in_xs pw_xs_x (or.inl rfl),
   let c := ord_insert_pred pw_xs_a (symm b),
   exact pairwise.cons c a,
+end
+
+theorem insertion_sort_spec
+  {t: Type}
+  [has_le t]
+  [@decidable_rel t has_le.le]
+  [is_trans t has_le.le]
+  [is_total t has_le.le]
+  (xs: list t):
+  sorted (insertion_sort xs) :=
+begin
+  induction xs,
+  simp [insertion_sort],
+  exact pairwise.nil (≤),
+  simp [insertion_sort],
+  exact ord_insert_spec xs_hd (insertion_sort xs_tl) xs_ih,
 end
 
 theorem insertion_sort_pred {t: Type} {p: t -> Prop} {xs: list t}
