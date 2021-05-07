@@ -148,7 +148,7 @@ begin
   exact xs_ih (or.inr h),
 end
 
-theorem insert_pred {t: Type} {p: t -> Prop} {xs: list t} {x: t}
+theorem ord_insert_pred {t: Type} {p: t -> Prop} {xs: list t} {x: t}
   [has_le t] [@decidable_rel t has_le.le]:
   (∀ (y ∈ xs), p y) ->
   p x ->
@@ -177,7 +177,7 @@ begin
   exact xs_ih in_xs' in_insert,
 end
 
-theorem insert_pairwise {t: Type} {r: t -> t -> Prop} {xs: list t} {x: t}
+theorem ord_insert_pairwise {t: Type} {r: t -> t -> Prop} {xs: list t} {x: t}
   [is_symm t r] [has_le t] [@decidable_rel t has_le.le]:
   (∀ (y ∈ xs), r x y) ->
   pairwise r xs ->
@@ -196,11 +196,11 @@ begin
   let in_xs' := fun y, fun h, in_xs y (or.inr h),
   let a := pw_xs_ih in_xs',
   let b := in_xs pw_xs_x (or.inl rfl),
-  let c := insert_pred pw_xs_a (symm b),
+  let c := ord_insert_pred pw_xs_a (symm b),
   exact pairwise.cons c a,
 end
 
-theorem sort_pred {t: Type} {p: t -> Prop} {xs: list t}
+theorem insertion_sort_pred {t: Type} {p: t -> Prop} {xs: list t}
   [has_le t] [@decidable_rel t has_le.le]:
   (∀ (y ∈ xs), p y) ->
   (∀ (y ∈ insertion_sort xs), p y) :=
@@ -218,7 +218,7 @@ begin
   exact xs_ih in_xs' h,
 end
 
-theorem sort_pairwise {t: Type} {r: t -> t -> Prop} {xs: list t}
+theorem insertion_sort_pairwise {t: Type} {r: t -> t -> Prop} {xs: list t}
   [is_symm t r] [has_le t] [@decidable_rel t has_le.le]:
   pairwise r xs ->
   pairwise r (insertion_sort xs) :=
@@ -228,7 +228,7 @@ begin
   simp [insertion_sort],
   exact pairwise.nil r,
   simp [insertion_sort],
-  let a := sort_pred h_a,
+  let a := insertion_sort_pred h_a,
   simp at a,
-  exact insert_pairwise a h_ih,
+  exact ord_insert_pairwise a h_ih,
 end
