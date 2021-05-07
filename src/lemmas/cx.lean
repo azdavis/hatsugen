@@ -4,11 +4,18 @@ theorem lookup_insert {t: Type} (Γ: cx t) (x: var) (v: t):
   cx.lookup (cx.insert x v Γ) x = some v :=
 begin
   cases Γ,
-  cases Γ_entries,
+  induction Γ_entries,
   simp [cx.insert],
   simp [insertion_sort],
   simp [ord_insert],
   simp [cx.lookup],
+  cases Γ_nodupkeys,
+  simp [cx.insert],
+  /-
+  cases decidable.em (x = Γ_entries_hd.x),
+  simp [h],
+  let a := Γ_entries_ih Γ_nodupkeys_a_1,
+   -/
   sorry,
 end
 
