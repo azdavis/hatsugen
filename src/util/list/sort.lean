@@ -19,7 +19,7 @@ def insertion_sort
 
 def sorted {t: Type} [has_le t]: list t -> Prop := pairwise (≤)
 
-theorem insert_mem {t: Type} {xs: list t} {x y: t}
+theorem ord_insert_mem {t: Type} {xs: list t} {x y: t}
   [has_le t] [@decidable_rel t has_le.le]:
   x ∈ ord_insert y xs ↔
   x = y ∨ x ∈ xs :=
@@ -69,33 +69,6 @@ begin
   exact xs_ih (or.inr h),
 end
 
-theorem ord_insert_mem
-  {t: Type}
-  [has_le t]
-  [@decidable_rel t has_le.le]
-  {x: t} {xs: list t}:
-  ∀ (y ∈ ord_insert x xs), y = x ∨ y ∈ xs :=
-begin
-  intros y h,
-  induction xs,
-  simp [ord_insert] at h,
-  exact or.inl h,
-  simp [ord_insert] at h,
-  cases decidable.em (x ≤ xs_hd),
-  simp [h_1] at h,
-  exact h,
-  simp [h_1] at h,
-  cases h,
-  right,
-  simp,
-  exact or.inl h,
-  cases xs_ih h,
-  exact or.inl h_2,
-  right,
-  simp,
-  exact or.inr h_2,
-end
-
 theorem ord_insert_spec
   {t: Type}
   [has_le t]
@@ -121,7 +94,7 @@ begin
   simp [h],
   let b: ∀ (a: t), a ∈ ord_insert x h_xs -> h_x ≤ a := fun a, fun b,
   begin
-    cases ord_insert_mem a b,
+    cases iff.elim_left ord_insert_mem b,
     rw h_1,
     cases is_total.total (≤) x h_x,
     exfalso,
@@ -211,7 +184,7 @@ begin
   exfalso,
   exact in_sort,
   simp [insertion_sort] at in_sort,
-  cases iff.elim_left insert_mem in_sort,
+  cases iff.elim_left ord_insert_mem in_sort,
   rw h,
   exact in_xs xs_hd (or.inl rfl),
   let in_xs' := fun y, fun h, in_xs y (or.inr h),
