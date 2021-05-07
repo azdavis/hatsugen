@@ -100,9 +100,10 @@ end
 
 theorem insert_mem {t: Type} {xs: list t} {x y: t}
   [has_le t] [@decidable_rel t has_le.le]:
-  x ∈ ord_insert y xs ->
+  x ∈ ord_insert y xs ↔
   x = y ∨ x ∈ xs :=
 begin
+  split,
   intro in_ins,
   induction xs,
   simp [ord_insert] at in_ins,
@@ -125,6 +126,26 @@ begin
   simp,
   right,
   exact h_1,
+  intro h,
+  induction xs,
+  simp [ord_insert],
+  cases h,
+  exact h,
+  exfalso,
+  exact list.not_mem_nil x h,
+  simp [ord_insert],
+  cases decidable.em (y ≤ xs_hd),
+  simp [h_1],
+  exact h,
+  simp [h_1],
+  cases h,
+  right,
+  exact xs_ih (or.inl h),
+  cases h,
+  left,
+  exact h,
+  right,
+  exact xs_ih (or.inr h),
 end
 
 theorem insert_pred {t: Type} {p: t -> Prop} {xs: list t} {x: t}
@@ -190,7 +211,7 @@ begin
   exfalso,
   exact in_sort,
   simp [insertion_sort] at in_sort,
-  cases insert_mem in_sort,
+  cases iff.elim_left insert_mem in_sort,
   rw h,
   exact in_xs xs_hd (or.inl rfl),
   let in_xs' := fun y, fun h, in_xs y (or.inr h),
