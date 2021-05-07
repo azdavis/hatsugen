@@ -23,8 +23,6 @@ theorem ord_insert_mem
   {t: Type}
   [has_le t]
   [@decidable_rel t has_le.le]
-  [is_trans t has_le.le]
-  [is_total t has_le.le]
   {x: t} {xs: list t}:
   ∀ (y ∈ ord_insert x xs), y = x ∨ y ∈ xs :=
 begin
