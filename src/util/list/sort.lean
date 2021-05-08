@@ -206,11 +206,12 @@ begin
   exact ord_insert_pairwise a h_ih,
 end
 
-theorem insertion_sort_mem {t: Type} {xs: list t}
+theorem insertion_sort_mem {t: Type} {xs: list t} {x: t}
   [has_le t] [@decidable_rel t has_le.le]:
-  ∀ (x ∈ xs), x ∈ insertion_sort xs :=
+  x ∈ xs ↔ x ∈ insertion_sort xs :=
 begin
-  intros x x_in,
+  split,
+  intro x_in,
   induction xs,
   exfalso,
   exact list.not_mem_nil x x_in,
@@ -218,4 +219,15 @@ begin
   cases x_in,
   exact iff.elim_right ord_insert_mem (or.inl x_in),
   exact iff.elim_right ord_insert_mem (or.inr (xs_ih x_in)),
+  intro x_in,
+  induction xs,
+  simp [insertion_sort] at x_in,
+  exfalso,
+  exact x_in,
+  simp [insertion_sort] at x_in,
+  cases iff.elim_left ord_insert_mem x_in,
+  left,
+  exact h,
+  right,
+  exact xs_ih h,
 end

@@ -51,7 +51,7 @@ begin
   let ys := (elem :: list.filter p Γ_entries),
   let h: elem ∈ ys := or.inl rfl,
   let ys' := insertion_sort ys,
-  let h': elem ∈ ys' := insertion_sort_mem elem h,
+  let h': elem ∈ ys' := iff.elim_left insertion_sort_mem h,
   simp [cx.insert],
   exact iff.elim_left (lookup_mem_entries (cx.mk ys' _) x v) h',
 end
