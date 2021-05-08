@@ -205,3 +205,17 @@ begin
   simp at a,
   exact ord_insert_pairwise a h_ih,
 end
+
+theorem insertion_sort_mem {t: Type} {r: t -> t -> Prop} {xs: list t}
+  [has_le t] [@decidable_rel t has_le.le]:
+  ∀ (x ∈ xs), x ∈ insertion_sort xs :=
+begin
+  intros x x_in,
+  induction xs,
+  exfalso,
+  exact list.not_mem_nil x x_in,
+  simp [insertion_sort],
+  cases x_in,
+  exact iff.elim_right ord_insert_mem (or.inl x_in),
+  exact iff.elim_right ord_insert_mem (or.inr (xs_ih x_in)),
+end
