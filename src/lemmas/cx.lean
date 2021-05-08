@@ -102,7 +102,12 @@ begin
   let d := fun vx, iff.elim_left (not_iff_not_of_iff lookup_mem_entries) (c vx),
   rw h_1,
   exact not_some_is_none d,
-  sorry,
+  cases h_1,
+  let a := iff.elim_right lookup_mem_entries h_1_h,
+  let b: cx_elem.mk x h_1_w ∈ (cx.insert y v Γ).entries :=
+    iff.elim_left (lookup_mem_entries_ne h) a,
+  rw h_1_h,
+  exact iff.elim_left lookup_mem_entries b,
 end
 
 theorem useless_insert_twice {t: Type} (Γ: cx t) (x: var) (v v': t):
