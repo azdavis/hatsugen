@@ -68,11 +68,12 @@ end
 def cx.insert {t: Type} (x: var) (v: t) (Γ: cx t): cx t :=
 begin
   cases Γ,
+  let elem := cx_elem.mk x v,
   let p: cx_elem t -> Prop := fun a, x ≠ a.x,
-  let entries' := insertion_sort (cx_elem.mk x v :: list.filter p Γ_entries),
+  let entries' := insertion_sort (elem :: list.filter p Γ_entries),
   let f := fun a, fun b, (filter_spec p Γ_entries a b).right,
   let nodupkeys' := insertion_sort_pairwise (@pairwise.cons
-    (cx_elem t) ne_var (cx_elem.mk x v) (list.filter p Γ_entries) f
+    (cx_elem t) ne_var elem (list.filter p Γ_entries) f
     (filter_pairwise p Γ_nodupkeys)),
   exact cx.mk entries' nodupkeys',
 end
