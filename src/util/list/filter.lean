@@ -1,10 +1,11 @@
 import util.list.pairwise
 
-theorem filter_spec {t: Type} (p: t -> Prop) (xs: list t)
+theorem filter_spec {t: Type} (p: t -> Prop) (xs: list t) (x: t)
   [decidable_pred p]:
-  ∀ x ∈ list.filter p xs, (x ∈ xs) ∧ (p x) :=
+  x ∈ list.filter p xs ↔ (x ∈ xs) ∧ (p x) :=
 begin
-  intros x h,
+  split,
+  intro h,
   induction xs,
   simp [list.filter] at h,
   exfalso,
@@ -30,6 +31,24 @@ begin
   right,
   exact left,
   exact right,
+  intro h,
+  induction xs,
+  exfalso,
+  exact list.not_mem_nil x h.left,
+  simp [list.filter],
+  cases decidable.em (p xs_hd),
+  simp [h_1],
+  cases h.left,
+  left,
+  exact h_2,
+  right,
+  exact xs_ih (and.intro h_2 h.right),
+  simp [h_1],
+  cases h.left,
+  rw h_2 at h,
+  exfalso,
+  exact h_1 h.right,
+  exact xs_ih (and.intro h_2 h.right),
 end
 
 theorem filter_pairwise {t: Type} {r: t -> t -> Prop} {xs: list t}
@@ -46,7 +65,7 @@ begin
   cases decidable.em (p h_x),
   simp [h],
   let f: ∀ (y: t), y ∈ list.filter p h_xs -> r h_x y := fun a, fun b,
-    h_a a (filter_spec p h_xs a b).left,
+    h_a a (iff.elim_left (filter_spec p h_xs a) b).left,
   exact pairwise.cons f h_ih,
   simp [h],
   exact h_ih,
