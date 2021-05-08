@@ -72,7 +72,7 @@ begin
   let p: cx_elem t -> Prop := fun a, x ≠ a.x,
   let entries' := insertion_sort (elem :: list.filter p Γ_entries),
   let f := fun (a: cx_elem t), fun (b: a ∈ list.filter p Γ_entries),
-    (iff.elim_left filter_spec b).right,
+    (iff.elim_right filter_spec b).right,
   let nodupkeys' := insertion_sort_pairwise (@pairwise.cons
     (cx_elem t) ne_var elem (list.filter p Γ_entries) f
     (filter_pairwise p Γ_nodupkeys)),
