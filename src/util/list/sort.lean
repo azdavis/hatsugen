@@ -206,7 +206,7 @@ begin
   exact ord_insert_pairwise a h_ih,
 end
 
-theorem insertion_sort_mem {t: Type} {r: t -> t -> Prop} {xs: list t}
+theorem insertion_sort_mem {t: Type} {xs: list t}
   [has_le t] [@decidable_rel t has_le.le]:
   ∀ (x ∈ xs), x ∈ insertion_sort xs :=
 begin
