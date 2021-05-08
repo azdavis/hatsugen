@@ -1,4 +1,5 @@
 import defs.var
+import util.option
 
 theorem lookup_mem_entries {t: Type} {Γ: cx t} {x: var} {v: t}:
   cx_elem.mk x v ∈ Γ.entries ↔
@@ -90,20 +91,17 @@ theorem useless_insert_ne {t: Type} (Γ: cx t) (x y: var) (v: t):
   cx.lookup Γ x :=
 begin
   intro h,
-  cases Γ,
-  induction Γ_entries,
-  simp [cx.insert],
-  simp [insertion_sort],
-  simp [ord_insert],
-  simp [cx.lookup],
-  simp [h],
-  cases Γ_nodupkeys,
-  cases Γ_entries_hd,
-  cases decidable.em (x = Γ_entries_hd_x),
+  cases option_em (cx.lookup Γ x),
+  let a := fun h, option_not_both (cx.lookup Γ x) (and.intro h_1 h),
+  let b: ∀ (vx: t), cx_elem.mk x vx ∉ Γ.entries := fun vx, fun h, a begin
+    existsi vx,
+    exact iff.elim_left lookup_mem_entries h,
+  end,
+  let c: ∀ (vx: t), cx_elem.mk x vx ∉ (cx.insert y v Γ).entries := fun vx,
+    iff.elim_left (not_iff_not_of_iff (lookup_mem_entries_ne h)) (b vx),
+  let d := fun vx, iff.elim_left (not_iff_not_of_iff lookup_mem_entries) (c vx),
   rw h_1,
-  simp [cx.lookup],
-  simp [h],
-  sorry,
+  exact not_some_is_none d,
   sorry,
 end
 
