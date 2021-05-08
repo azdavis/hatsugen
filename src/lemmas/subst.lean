@@ -59,7 +59,6 @@ begin
   rw symm h at et_a ⊢,
   rw symm a at et_a,
   exact has_typ.fn et_a,
-  let a := iff.elim_left (filter_spec (ne et_x) (fv et_e) x),
   let b := not_filter fv_e (fun a, h (symm a)),
   let c := et_ih b,
   rw insert_comm et_Γ x et_x τx et_τ1 at c,

@@ -60,14 +60,14 @@ begin
   split,
   intro h,
   let a: elem ∈ list.filter p Γ_entries :=
-    iff.elim_right (filter_spec p Γ_entries elem) (and.intro h p_elem),
+    iff.elim_right filter_spec (and.intro h p_elem),
   exact iff.elim_left insertion_sort_mem (or.inr a),
   intro h,
   cases iff.elim_right insertion_sort_mem h,
   cases cx_elem.mk.inj h_1,
   exfalso,
   exact xy_ne left,
-  exact (iff.elim_left (filter_spec p Γ_entries elem) h_1).left,
+  exact (iff.elim_left filter_spec h_1).left,
 end
 
 theorem lookup_insert {t: Type} (Γ: cx t) (x: var) (v: t):

@@ -1,6 +1,6 @@
 import util.list.pairwise
 
-theorem filter_spec {t: Type} (p: t -> Prop) (xs: list t) (x: t)
+theorem filter_spec {t: Type} {p: t -> Prop} {xs: list t} {x: t}
   [decidable_pred p]:
   x ∈ list.filter p xs ↔ (x ∈ xs) ∧ (p x) :=
 begin
@@ -65,7 +65,7 @@ begin
   cases decidable.em (p h_x),
   simp [h],
   let f: ∀ (y: t), y ∈ list.filter p h_xs -> r h_x y := fun a, fun b,
-    h_a a (iff.elim_left (filter_spec p h_xs a) b).left,
+    h_a a (iff.elim_left filter_spec b).left,
   exact pairwise.cons f h_ih,
   simp [h],
   exact h_ih,
