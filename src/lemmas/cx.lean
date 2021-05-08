@@ -1,6 +1,6 @@
 import defs.var
 
-theorem lookup_mem_entries {t: Type} (Γ: cx t) (x: var) (v: t):
+theorem lookup_mem_entries {t: Type} {Γ: cx t} {x: var} {v: t}:
   cx_elem.mk x v ∈ Γ.entries ↔
   cx.lookup Γ x = some v :=
 begin
@@ -42,7 +42,7 @@ begin
   exact Γ_entries_ih Γ_nodupkeys_a_1 h,
 end
 
-theorem lookup_mem_entries_ne {t: Type} (Γ: cx t) (x y: var) (vx vy: t):
+theorem lookup_mem_entries_ne {t: Type} {Γ: cx t} {x y: var} {vx vy: t}:
   x ≠ y ->
   (cx_elem.mk x vx ∈ Γ.entries ↔
   cx_elem.mk x vx ∈ (cx.insert y vy Γ).entries) :=
@@ -81,7 +81,7 @@ begin
   let ys' := insertion_sort ys,
   let h': elem ∈ ys' := iff.elim_left insertion_sort_mem h,
   simp [cx.insert],
-  exact iff.elim_left (lookup_mem_entries (cx.mk ys' _) x v) h',
+  exact iff.elim_left lookup_mem_entries h',
 end
 
 theorem useless_insert_ne {t: Type} (Γ: cx t) (x y: var) (v: t):
