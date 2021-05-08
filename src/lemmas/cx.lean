@@ -29,19 +29,14 @@ theorem lookup_insert {t: Type} (Γ: cx t) (x: var) (v: t):
   cx.lookup (cx.insert x v Γ) x = some v :=
 begin
   cases Γ,
-  induction Γ_entries,
+  let elem := cx_elem.mk x v,
+  let p: cx_elem t -> Prop := fun a, x ≠ a.x,
+  let ys := (elem :: list.filter p Γ_entries),
+  let h: elem ∈ ys := or.inl rfl,
+  let ys' := insertion_sort ys,
+  let h': elem ∈ ys' := insertion_sort_mem elem h,
   simp [cx.insert],
-  simp [insertion_sort],
-  simp [ord_insert],
-  simp [cx.lookup],
-  cases Γ_nodupkeys,
-  simp [cx.insert],
-  /-
-  cases decidable.em (x = Γ_entries_hd.x),
-  simp [h],
-  let a := Γ_entries_ih Γ_nodupkeys_a_1,
-   -/
-  sorry,
+  exact lookup_mem_entries (cx.mk ys' _) x v h',
 end
 
 theorem useless_insert_ne {t: Type} (Γ: cx t) (x y: var) (v: t):
