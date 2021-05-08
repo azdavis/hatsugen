@@ -1,5 +1,30 @@
 import defs.var
 
+theorem lookup_mem_entries {t: Type} (Γ: cx t) (x: var) (v: t):
+  cx_elem.mk x v ∈ Γ.entries ->
+  cx.lookup Γ x = some v :=
+begin
+  cases Γ,
+  intro h,
+  simp at h,
+  induction Γ_entries,
+  exfalso,
+  exact list.not_mem_nil (cx_elem.mk x v) h,
+  cases h,
+  cases Γ_entries_hd,
+  simp [cx.lookup],
+  cases cx_elem.mk.inj h,
+  simp [left],
+  exact symm right,
+  cases Γ_nodupkeys,
+  let a := Γ_nodupkeys_a (cx_elem.mk x v) h,
+  simp [ne_var] at a,
+  let a' := fun x, a (symm x),
+  simp [cx.lookup],
+  simp [a'],
+  exact Γ_entries_ih Γ_nodupkeys_a_1 h,
+end
+
 theorem lookup_insert {t: Type} (Γ: cx t) (x: var) (v: t):
   cx.lookup (cx.insert x v Γ) x = some v :=
 begin
