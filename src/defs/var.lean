@@ -18,33 +18,33 @@ def le_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
 def lt_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
   a.x < b.x
 
-instance cx_elem_has_le {t: Type} [has_le t]: has_le (cx_elem t) :=
+instance {t: Type} [has_le t]: has_le (cx_elem t) :=
   has_le.mk le_var
 
-instance cx_elem_has_lt {t: Type}: has_lt (cx_elem t) := has_lt.mk lt_var
+instance {t: Type}: has_lt (cx_elem t) := has_lt.mk lt_var
 
-instance ne_var_symm {t: Type}: is_symm (cx_elem t) ne_var := is_symm.mk
+instance {t: Type}: is_symm (cx_elem t) ne_var := is_symm.mk
 begin
   intros a b ab,
   simp [ne_var] at *,
   exact ne.symm ab,
 end
 
-instance le_var_decidable {t: Type}: @decidable_rel (cx_elem t) le_var :=
+instance huh {t: Type}: @decidable_rel (cx_elem t) le_var :=
 begin
   intros a b,
   simp [le_var],
   exact nat.decidable_le a.x b.x,
 end
 
-instance le_var_trans {t: Type}: is_trans (cx_elem t) le_var := is_trans.mk
+instance {t: Type}: is_trans (cx_elem t) le_var := is_trans.mk
 begin
   intros a b c ha hb,
   simp [le_var] at *,
   exact is_trans.trans a.x b.x c.x ha hb,
 end
 
-instance le_var_total {t: Type}: is_total (cx_elem t) le_var := is_total.mk
+instance {t: Type}: is_total (cx_elem t) le_var := is_total.mk
 begin
   intros a b,
   simp [le_var],
@@ -90,7 +90,7 @@ begin
   exact cx.mk entries' nodupkeys' sorted',
 end
 
-instance cx_has_insert {t: Type} [has_le t]: has_insert (prod var t) (cx t) :=
+instance {t: Type} [has_le t]: has_insert (prod var t) (cx t) :=
   has_insert.mk begin
     intros a Γ,
     cases a,

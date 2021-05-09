@@ -17,8 +17,8 @@ def typ_lt: typ -> typ -> Prop
 | (typ.arrow _ _) typ.int := false
 | (typ.arrow _ _) typ.bool := false
 
-instance typ_has_lt: has_lt typ := has_lt.mk typ_lt
-instance typ_has_le: has_le typ := has_le.mk (fun a b, (a = b) ∨ (a < b))
+instance: has_lt typ := has_lt.mk typ_lt
+instance: has_le typ := has_le.mk (fun a b, (a = b) ∨ (a < b))
 
 -- expressions
 inductive exp: Type
