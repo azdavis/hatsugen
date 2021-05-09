@@ -57,7 +57,7 @@ structure cx (t: Type) [has_le t]: Type :=
   (sorted: sorted entries)
 
 def cx.empty {t: Type} [has_le t]: cx t :=
-  cx.mk [] (pairwise.nil ne_var) (pairwise.nil le_var)
+  cx.mk [] (pairwise.nil ne_var) (pairwise.nil (≤))
 
 def cx.lookup {t: Type} [has_le t] (Γ: cx t) (x: var): option t :=
 begin
