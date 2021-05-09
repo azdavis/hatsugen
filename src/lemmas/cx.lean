@@ -112,15 +112,49 @@ begin
   exact iff.elim_left lookup_mem_entries b,
 end
 
+theorem lookup_same {t: Type} {Γ Γ': cx t}:
+  (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) -> Γ = Γ' := sorry
+
+theorem lookup_insert' {t: Type} (Γ: cx t) (x y: var) (v: t):
+  cx.lookup (cx.insert x v Γ) y = (if x = y then some v else cx.lookup Γ y) :=
+begin
+  cases decidable.em (x = y),
+  simp [h],
+  exact lookup_insert Γ y v,
+  simp [h],
+  exact useless_insert_ne Γ y x v (fun e, h (symm e)),
+end
+
 theorem useless_insert_twice {t: Type} (Γ: cx t) (x: var) (v v': t):
   cx.insert x v (cx.insert x v' Γ) = cx.insert x v Γ :=
-begin
-  sorry
+lookup_same begin
+  intro y,
+  rw lookup_insert' (cx.insert x v' Γ) x y v,
+  rw lookup_insert' Γ x y v',
+  rw lookup_insert' Γ x y v,
+  cases decidable.em (x = y),
+  simp [h],
+  simp [h],
 end
 
 theorem insert_comm {t: Type} (Γ: cx t) (x y: var) (vx vy: t) (h: x ≠ y):
   cx.insert x vx (cx.insert y vy Γ) =
   cx.insert y vy (cx.insert x vx Γ) :=
-begin
-  sorry
+lookup_same begin
+  intro z,
+  rw lookup_insert' (cx.insert y vy Γ) x z vx,
+  rw lookup_insert' (cx.insert x vx Γ) y z vy,
+  rw lookup_insert' Γ x z vx,
+  rw lookup_insert' Γ y z vy,
+  cases decidable.em (x = z),
+  cases decidable.em (y = z),
+  rw symm h_2 at h_1,
+  exfalso,
+  exact h h_1,
+  simp [h_1],
+  simp [h_2],
+  simp [h_1],
+  cases decidable.em (y = z),
+  simp [h_2],
+  simp [h_2],
 end
