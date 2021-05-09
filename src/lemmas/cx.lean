@@ -131,12 +131,23 @@ begin
   exact h,
 end
 
+theorem lookup_same_mem_entries_one {t: Type} {Γ Γ': cx t}:
+  (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) ->
+  (∀ (e: cx_elem t), e ∈ Γ.entries -> e ∈ Γ'.entries) :=
+begin
+  intros h,
+  sorry,
+end
+
 theorem lookup_same_mem_entries {t: Type} {Γ Γ': cx t}:
   (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) ->
   (∀ (e: cx_elem t), e ∈ Γ.entries ↔ e ∈ Γ'.entries) :=
 begin
-  intro h,
-  sorry,
+  intros h e,
+  split,
+  exact lookup_same_mem_entries_one h e,
+  let h' := fun x, symm (h x),
+  exact lookup_same_mem_entries_one h' e,
 end
 
 theorem lookup_same_eq_entries {t: Type} {Γ Γ': cx t}:
