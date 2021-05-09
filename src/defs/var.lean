@@ -30,24 +30,23 @@ begin
   exact ne.symm ab,
 end
 
-instance huh {t: Type}: @decidable_rel (cx_elem t) le_var :=
+instance huh {t: Type} [has_le t]: @decidable_rel (cx_elem t) (≤) :=
 begin
   intros a b,
-  simp [le_var],
   exact nat.decidable_le a.x b.x,
 end
 
-instance {t: Type}: is_trans (cx_elem t) le_var := is_trans.mk
+instance {t: Type} [has_le t]: is_trans (cx_elem t) (≤) := is_trans.mk
 begin
   intros a b c ha hb,
+  simp [has_le.le] at *,
   simp [le_var] at *,
   exact is_trans.trans a.x b.x c.x ha hb,
 end
 
-instance {t: Type}: is_total (cx_elem t) le_var := is_total.mk
+instance {t: Type} [has_le t]: is_total (cx_elem t) (≤) := is_total.mk
 begin
   intros a b,
-  simp [le_var],
   exact linear_order.le_total a.x b.x,
 end
 
