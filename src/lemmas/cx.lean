@@ -155,12 +155,14 @@ begin
   exact lookup_same_mem_entries_one h' e,
 end
 
-theorem lt_var_of_le_ne {t: Type} [has_le t] (x y: cx_elem t): x ≤ y -> x ≠ y -> x < y :=
+theorem cx_elem_lt_of_le_ne {t: Type} [has_le t] (x y: cx_elem t):
+  x ≤ y -> x ≠ y -> x < y :=
 begin
   sorry,
 end
 
-theorem lt_var_not_both {t: Type} (x y: cx_elem t): ¬ (x < y ∧ y < x) :=
+theorem cx_elem_lt_not_both {t: Type} (x y: cx_elem t):
+  ¬ (x < y ∧ y < x) :=
 begin
   sorry,
 end
@@ -170,8 +172,8 @@ theorem lookup_same_eq_entries {t: Type} [has_le t] {Γ Γ': cx t}:
 begin
   intro h,
   exact sorted_ne_eq
-    lt_var_of_le_ne
-    lt_var_not_both
+    cx_elem_lt_of_le_ne
+    cx_elem_lt_not_both
     (lookup_same_mem_entries h)
     (pairwise_implies ne_var_ne Γ.nodupkeys)
     (pairwise_implies ne_var_ne Γ'.nodupkeys)
