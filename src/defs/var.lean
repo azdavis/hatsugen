@@ -48,8 +48,10 @@ end
 structure cx (t: Type): Type :=
   (entries: list (cx_elem t))
   (nodupkeys: pairwise ne_var entries)
+  (sorted: sorted entries)
 
-def cx.empty {t: Type}: cx t := cx.mk [] (pairwise.nil ne_var)
+def cx.empty {t: Type}: cx t :=
+  cx.mk [] (pairwise.nil ne_var) (pairwise.nil le_var)
 
 def cx.lookup {t: Type} (Γ: cx t) (x: var): option t :=
 begin
@@ -60,7 +62,9 @@ begin
     some Γ_entries_hd.v
   else
     -- avoid weird 'can only eliminate into Prop' error when trying to use cases
-    Γ_entries_ih (pairwise_inversion Γ_nodupkeys)
+    Γ_entries_ih
+      (pairwise_inversion Γ_nodupkeys)
+      (pairwise_inversion Γ_sorted)
   ),
 end
 
@@ -76,7 +80,8 @@ begin
   let nodupkeys' := insertion_sort_pairwise (@pairwise.cons
     (cx_elem t) ne_var elem (list.filter p Γ_entries) f
     (filter_pairwise p Γ_nodupkeys)),
-  exact cx.mk entries' nodupkeys',
+  let sorted' := insertion_sort_spec (elem :: list.filter p Γ_entries),
+  exact cx.mk entries' nodupkeys' sorted',
 end
 
 instance cx_has_insert {t: Type}: has_insert (prod var t) (cx t) :=

@@ -19,12 +19,13 @@ begin
   simp [left],
   exact symm right,
   cases Γ_nodupkeys,
+  cases Γ_sorted,
   let a := Γ_nodupkeys_a (cx_elem.mk x v) h,
   simp [ne_var] at a,
   let a' := fun x, a (symm x),
   simp [cx.lookup],
   simp [a'],
-  exact Γ_entries_ih Γ_nodupkeys_a_1 h,
+  exact Γ_entries_ih Γ_nodupkeys_a_1 Γ_sorted_a_1 h,
   intro h,
   induction Γ_entries,
   simp [cx.lookup] at h,
@@ -39,8 +40,9 @@ begin
   rw symm h,
   simp [h_1] at h,
   cases Γ_nodupkeys,
+  cases Γ_sorted,
   right,
-  exact Γ_entries_ih Γ_nodupkeys_a_1 h,
+  exact Γ_entries_ih Γ_nodupkeys_a_1 Γ_sorted_a_1 h,
 end
 
 theorem lookup_mem_entries_ne {t: Type} {Γ: cx t} {x y: var} {vx vy: t}:
