@@ -113,7 +113,11 @@ begin
 end
 
 theorem lookup_same {t: Type} {Γ Γ': cx t}:
-  (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) -> Γ = Γ' := sorry
+  (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) -> Γ = Γ' :=
+begin
+  intro h,
+  sorry,
+end
 
 theorem lookup_insert' {t: Type} (Γ: cx t) (x y: var) (v: t):
   cx.lookup (cx.insert x v Γ) y = (if x = y then some v else cx.lookup Γ y) :=
