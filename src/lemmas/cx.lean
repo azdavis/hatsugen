@@ -135,8 +135,12 @@ theorem lookup_same_mem_entries_one {t: Type} {Γ Γ': cx t}:
   (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) ->
   (∀ (e: cx_elem t), e ∈ Γ.entries -> e ∈ Γ'.entries) :=
 begin
-  intros h,
-  sorry,
+  intros h e e_in,
+  cases e,
+  let a := iff.elim_left lookup_mem_entries e_in,
+  let b := h e_x,
+  rw a at b,
+  exact iff.elim_right lookup_mem_entries (symm b),
 end
 
 theorem lookup_same_mem_entries {t: Type} {Γ Γ': cx t}:
