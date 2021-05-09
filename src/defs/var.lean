@@ -21,7 +21,7 @@ def lt_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
 instance {t: Type} [has_le t]: has_le (cx_elem t) :=
   has_le.mk le_var
 
-instance {t: Type}: has_lt (cx_elem t) := has_lt.mk lt_var
+instance {t: Type} [has_lt t]: has_lt (cx_elem t) := has_lt.mk lt_var
 
 instance {t: Type}: is_symm (cx_elem t) ne_var := is_symm.mk
 begin

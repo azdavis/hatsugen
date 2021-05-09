@@ -155,19 +155,19 @@ begin
   exact lookup_same_mem_entries_one h' e,
 end
 
-theorem cx_elem_lt_of_le_ne {t: Type} [has_le t] (x y: cx_elem t):
+theorem cx_elem_lt_of_le_ne {t: Type} [has_le t] [has_lt t] (x y: cx_elem t):
   x ≤ y -> x ≠ y -> x < y :=
 begin
   sorry,
 end
 
-theorem cx_elem_lt_not_both {t: Type} (x y: cx_elem t):
+theorem cx_elem_lt_not_both {t: Type} [has_lt t] (x y: cx_elem t):
   ¬ (x < y ∧ y < x) :=
 begin
   sorry,
 end
 
-theorem lookup_same_eq_entries {t: Type} [has_le t] {Γ Γ': cx t}:
+theorem lookup_same_eq_entries {t: Type} [has_le t] [has_lt t] {Γ Γ': cx t}:
   (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) -> Γ.entries = Γ'.entries :=
 begin
   intro h,
@@ -181,7 +181,7 @@ begin
     Γ'.sorted,
 end
 
-theorem lookup_same {t: Type} [has_le t] {Γ Γ': cx t}:
+theorem lookup_same {t: Type} [has_le t] [has_lt t] {Γ Γ': cx t}:
   (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) -> Γ = Γ' :=
 begin
   intro h,
@@ -198,7 +198,8 @@ begin
   exact useless_insert_ne Γ y x v (fun e, h (symm e)),
 end
 
-theorem useless_insert_twice {t: Type} [has_le t] (Γ: cx t) (x: var) (v v': t):
+theorem useless_insert_twice {t: Type} [has_le t] [has_lt t]
+  (Γ: cx t) (x: var) (v v': t):
   cx.insert x v (cx.insert x v' Γ) = cx.insert x v Γ :=
 lookup_same begin
   intro y,
@@ -210,7 +211,8 @@ lookup_same begin
   simp [h],
 end
 
-theorem insert_comm {t: Type} [has_le t] (Γ: cx t) (x y: var) (vx vy: t) (h: x ≠ y):
+theorem insert_comm {t: Type} [has_le t] [has_lt t]
+  (Γ: cx t) (x y: var) (vx vy: t) (h: x ≠ y):
   cx.insert x vx (cx.insert y vy Γ) =
   cx.insert y vy (cx.insert x vx Γ) :=
 lookup_same begin
