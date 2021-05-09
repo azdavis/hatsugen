@@ -18,7 +18,8 @@ def le_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
 def lt_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
   a.x < b.x
 
-instance cx_elem_has_le {t: Type}: has_le (cx_elem t) := has_le.mk le_var
+instance cx_elem_has_le {t: Type} [has_le t]: has_le (cx_elem t) :=
+  has_le.mk le_var
 
 instance cx_elem_has_lt {t: Type}: has_lt (cx_elem t) := has_lt.mk lt_var
 
@@ -50,15 +51,15 @@ begin
   exact linear_order.le_total a.x b.x,
 end
 
-structure cx (t: Type): Type :=
+structure cx (t: Type) [has_le t]: Type :=
   (entries: list (cx_elem t))
   (nodupkeys: pairwise ne_var entries)
   (sorted: sorted entries)
 
-def cx.empty {t: Type}: cx t :=
+def cx.empty {t: Type} [has_le t]: cx t :=
   cx.mk [] (pairwise.nil ne_var) (pairwise.nil le_var)
 
-def cx.lookup {t: Type} (Γ: cx t) (x: var): option t :=
+def cx.lookup {t: Type} [has_le t] (Γ: cx t) (x: var): option t :=
 begin
   cases Γ,
   induction Γ_entries,
@@ -74,7 +75,7 @@ begin
 end
 
 @[reducible]
-def cx.insert {t: Type} (x: var) (v: t) (Γ: cx t): cx t :=
+def cx.insert {t: Type} [has_le t] (x: var) (v: t) (Γ: cx t): cx t :=
 begin
   cases Γ,
   let elem := cx_elem.mk x v,
@@ -89,7 +90,7 @@ begin
   exact cx.mk entries' nodupkeys' sorted',
 end
 
-instance cx_has_insert {t: Type}: has_insert (prod var t) (cx t) :=
+instance cx_has_insert {t: Type} [has_le t]: has_insert (prod var t) (cx t) :=
   has_insert.mk begin
     intros a Γ,
     cases a,
