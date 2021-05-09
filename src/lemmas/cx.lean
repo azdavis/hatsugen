@@ -117,6 +117,7 @@ begin
 end
 
 theorem insert_comm {t: Type} (Γ: cx t) (x y: var) (vx vy: t):
+  x ≠ y ->
   cx.insert x vx (cx.insert y vy Γ) =
   cx.insert y vy (cx.insert x vx Γ) :=
 begin
