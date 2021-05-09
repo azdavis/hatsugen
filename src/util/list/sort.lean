@@ -1,4 +1,5 @@
 import util.list.pairwise
+import util.list.nil
 
 def ord_insert
   {t: Type}
@@ -233,7 +234,10 @@ begin
 end
 
 theorem sorted_ne_eq {t: Type} {xs ys: list t}
-  [has_le t]:
+  [has_le t]
+  [has_lt t]:
+  (∀ (x y: t), x ≤ y -> x ≠ y -> x < y) ->
+  (∀ (x y: t), ¬ (x < y ∧ y < x)) ->
   (∀ (x: t), x ∈ xs ↔ x ∈ ys) ->
   pairwise ne xs ->
   pairwise ne ys ->
@@ -241,5 +245,46 @@ theorem sorted_ne_eq {t: Type} {xs ys: list t}
   sorted ys ->
   xs = ys :=
 begin
-  sorry,
+  intros lt_of_le_ne not_lt_both x_in p_xs p_ys s_xs s_ys,
+  induction xs generalizing ys,
+  exact symm (iff.elim_left nothing_mem_nil (fun x xi,
+    list.not_mem_nil x (iff.elim_right (x_in x) xi))),
+  cases ys,
+  exfalso,
+  exact list.not_mem_nil xs_hd (iff.elim_left (x_in xs_hd) (or.inl rfl)),
+  cases p_xs,
+  cases p_ys,
+  cases s_xs,
+  cases s_ys,
+  cases iff.elim_left (x_in xs_hd) (or.inl rfl),
+  let x_in': ∀ (x: t), x ∈ xs_tl ↔ x ∈ ys_tl := begin
+    intro x,
+    split,
+    intro xi,
+    cases iff.elim_left (x_in x) (or.inr xi),
+    rw symm h_1 at h,
+    exfalso,
+    exact p_xs_a x xi h,
+    exact h_1,
+    intro xi,
+    cases iff.elim_right (x_in x) (or.inr xi),
+    rw symm h_1 at h,
+    exfalso,
+    exact p_ys_a x xi (symm h),
+    exact h_1,
+  end,
+  let a := xs_ih p_xs_a_1 s_xs_a_1 x_in' p_ys_a_1 s_ys_a_1,
+  rw h,
+  rw a,
+  cases iff.elim_right (x_in ys_hd) (or.inl rfl),
+  exfalso,
+  exact p_ys_a xs_hd h h_1,
+  let a := s_ys_a xs_hd h,
+  let b := s_xs_a ys_hd h_1,
+  let c := p_ys_a xs_hd h,
+  let c' := fun h, c (symm h),
+  let a' := lt_of_le_ne ys_hd xs_hd a c,
+  let b' := lt_of_le_ne xs_hd ys_hd b c',
+  exfalso,
+  exact not_lt_both ys_hd xs_hd (and.intro a' b'),
 end

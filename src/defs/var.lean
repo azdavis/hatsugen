@@ -15,7 +15,12 @@ def ne_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
 def le_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
   a.x ≤ b.x
 
+def lt_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
+  a.x < b.x
+
 instance cx_elem_has_le {t: Type}: has_le (cx_elem t) := has_le.mk le_var
+
+instance cx_elem_has_lt {t: Type}: has_lt (cx_elem t) := has_lt.mk lt_var
 
 instance ne_var_symm {t: Type}: is_symm (cx_elem t) ne_var := is_symm.mk
 begin

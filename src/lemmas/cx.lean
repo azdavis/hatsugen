@@ -154,11 +154,23 @@ begin
   exact lookup_same_mem_entries_one h' e,
 end
 
+theorem lt_var_of_le_ne {t: Type} (x y: cx_elem t): x ≤ y -> x ≠ y -> x < y :=
+begin
+  sorry,
+end
+
+theorem lt_var_not_both {t: Type} (x y: cx_elem t): ¬ (x < y ∧ y < x) :=
+begin
+  sorry,
+end
+
 theorem lookup_same_eq_entries {t: Type} {Γ Γ': cx t}:
   (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) -> Γ.entries = Γ'.entries :=
 begin
   intro h,
   exact sorted_ne_eq
+    lt_var_of_le_ne
+    lt_var_not_both
     (lookup_same_mem_entries h)
     (pairwise_implies ne_var_ne Γ.nodupkeys)
     (pairwise_implies ne_var_ne Γ'.nodupkeys)
