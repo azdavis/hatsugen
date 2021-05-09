@@ -231,3 +231,15 @@ begin
   right,
   exact xs_ih h,
 end
+
+theorem sorted_ne_eq {t: Type} {xs ys: list t}
+  [has_le t]:
+  (∀ (x: t), x ∈ xs ↔ x ∈ ys) ->
+  pairwise ne xs ->
+  pairwise ne ys ->
+  sorted xs ->
+  sorted ys ->
+  xs = ys :=
+begin
+  sorry,
+end

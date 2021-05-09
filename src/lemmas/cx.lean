@@ -112,11 +112,50 @@ begin
   exact iff.elim_left lookup_mem_entries b,
 end
 
+theorem ne_var_ne {t: Type} (a b: cx_elem t): ne_var a b -> a ≠ b :=
+begin
+  intro h,
+  simp [ne_var] at h,
+  intro bad,
+  rw bad at h,
+  exact h rfl,
+end
+
+theorem entries_same_eq {t: Type} {Γ Γ': cx t}:
+  Γ.entries = Γ'.entries -> Γ = Γ' :=
+begin
+  cases Γ,
+  cases Γ',
+  simp,
+  intro h,
+  exact h,
+end
+
+theorem lookup_same_mem_entries {t: Type} {Γ Γ': cx t}:
+  (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) ->
+  (∀ (e: cx_elem t), e ∈ Γ.entries ↔ e ∈ Γ'.entries) :=
+begin
+  intro h,
+  sorry,
+end
+
+theorem lookup_same_eq_entries {t: Type} {Γ Γ': cx t}:
+  (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) -> Γ.entries = Γ'.entries :=
+begin
+  intro h,
+  exact sorted_ne_eq
+    (lookup_same_mem_entries h)
+    (pairwise_implies ne_var_ne Γ.nodupkeys)
+    (pairwise_implies ne_var_ne Γ'.nodupkeys)
+    Γ.sorted
+    Γ'.sorted,
+end
+
 theorem lookup_same {t: Type} {Γ Γ': cx t}:
   (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) -> Γ = Γ' :=
 begin
   intro h,
-  sorry,
+  exact entries_same_eq (lookup_same_eq_entries h),
 end
 
 theorem lookup_insert' {t: Type} (Γ: cx t) (x y: var) (v: t):
