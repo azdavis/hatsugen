@@ -43,7 +43,7 @@ begin
   cases h_2,
   right,
   existsi subst et_e2 w emp.right h_2_w,
-  let d := @steps.app_done w et_τ1 h_2_w et_e2 emp.right h_1,
+  let d := steps.app_done emp.right h_1,
   -- avoid weird 'motive is not type correct' error
   rw symm h_2_h at d,
   exact d,
