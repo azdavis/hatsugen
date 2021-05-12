@@ -17,7 +17,42 @@ def typ_lt: typ -> typ -> Prop
 | (typ.arrow _ _) typ.int := false
 | (typ.arrow _ _) typ.bool := false
 
-instance typ_decidable_linear_order: decidable_linear_order typ := sorry
+def typ_le (a b: typ): Prop := (a = b) ∨ (typ_lt a b)
+
+instance typ_decidable_linear_order: decidable_linear_order typ :=
+decidable_linear_order.mk
+typ_le
+typ_lt
+begin
+  intro a,
+  simp,
+  simp [typ_le],
+end
+begin
+  intros a b c ab bc,
+  sorry,
+end
+begin
+  intros a b,
+  sorry,
+end
+begin
+  intros a b ab ba,
+  sorry,
+end
+begin
+  intros a b,
+  sorry,
+end
+begin
+  intros a b,
+  sorry,
+end
+typ.decidable_eq
+begin
+  intros a b,
+  sorry,
+end
 
 -- expressions
 inductive exp: Type

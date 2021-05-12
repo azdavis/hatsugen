@@ -5,6 +5,7 @@ import util.list.sort
 @[reducible]
 def var: Type := ℕ
 
+@[derive decidable_eq]
 structure cx_elem (t: Type): Type :=
   (x: var)
   (v: t)
@@ -19,8 +20,47 @@ begin
   exact ne.symm ab,
 end
 
+def cx_elem_lt {t: Type} [decidable_linear_order t] (a b: cx_elem t): Prop :=
+  if a.x = b.x then a.v < b.v else a.x < b.x
+
+def cx_elem_le {t: Type} [decidable_linear_order t] (a b: cx_elem t): Prop :=
+  (a = b) ∨ (cx_elem_lt a b)
+
 instance cx_elem_decidable_linear_order {t: Type} [decidable_linear_order t]:
-  decidable_linear_order (cx_elem t) := sorry
+decidable_linear_order (cx_elem t) :=
+decidable_linear_order.mk
+cx_elem_le
+cx_elem_lt
+begin
+  intro a,
+  simp,
+  simp [cx_elem_le],
+end
+begin
+  intros a b c ab bc,
+  sorry,
+end
+begin
+  intros a b,
+  sorry,
+end
+begin
+  intros a b ab ba,
+  sorry,
+end
+begin
+  intros a b,
+  sorry,
+end
+begin
+  intros a b,
+  sorry,
+end
+(cx_elem.decidable_eq t)
+begin
+  intros a b,
+  sorry,
+end
 
 structure cx (t: Type) [decidable_linear_order t]: Type :=
   (entries: list (cx_elem t))
