@@ -1,7 +1,7 @@
 import defs.var
 import util.option
 
-theorem lookup_mem_entries {t: Type} [has_le t] {Γ: cx t} {x: var} {v: t}:
+theorem lookup_mem_entries {t: Type} [decidable_linear_order t] {Γ: cx t} {x: var} {v: t}:
   cx_elem.mk x v ∈ Γ.entries ↔
   cx.lookup Γ x = some v :=
 begin
@@ -45,7 +45,7 @@ begin
   exact Γ_entries_ih Γ_nodupkeys_a_1 Γ_sorted_a_1 h,
 end
 
-theorem lookup_mem_entries_ne {t: Type} [has_le t]
+theorem lookup_mem_entries_ne {t: Type} [decidable_linear_order t]
   {Γ: cx t} {x y: var} {vx vy: t}:
   x ≠ y ->
   (cx_elem.mk x vx ∈ Γ.entries ↔
@@ -74,7 +74,7 @@ begin
   exact (iff.elim_right filter_spec h_1).left,
 end
 
-theorem lookup_insert {t: Type} [has_le t] (Γ: cx t) (x: var) (v: t):
+theorem lookup_insert {t: Type} [decidable_linear_order t] (Γ: cx t) (x: var) (v: t):
   cx.lookup (cx.insert x v Γ) x = some v :=
 begin
   cases Γ,
@@ -88,7 +88,7 @@ begin
   exact iff.elim_left lookup_mem_entries h',
 end
 
-theorem useless_insert_ne {t: Type} [has_le t] (Γ: cx t) (x y: var) (v: t):
+theorem useless_insert_ne {t: Type} [decidable_linear_order t] (Γ: cx t) (x y: var) (v: t):
   x ≠ y ->
   cx.lookup (cx.insert y v Γ) x =
   cx.lookup Γ x :=
@@ -122,7 +122,7 @@ begin
   exact h rfl,
 end
 
-theorem entries_same_eq {t: Type} [has_le t] {Γ Γ': cx t}:
+theorem entries_same_eq {t: Type} [decidable_linear_order t] {Γ Γ': cx t}:
   Γ.entries = Γ'.entries -> Γ = Γ' :=
 begin
   cases Γ,
@@ -132,7 +132,7 @@ begin
   exact h,
 end
 
-theorem lookup_same_mem_entries_one {t: Type} [has_le t] {Γ Γ': cx t}:
+theorem lookup_same_mem_entries_one {t: Type} [decidable_linear_order t] {Γ Γ': cx t}:
   (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) ->
   (∀ (e: cx_elem t), e ∈ Γ.entries -> e ∈ Γ'.entries) :=
 begin
@@ -144,7 +144,7 @@ begin
   exact iff.elim_right lookup_mem_entries (symm b),
 end
 
-theorem lookup_same_mem_entries {t: Type} [has_le t] {Γ Γ': cx t}:
+theorem lookup_same_mem_entries {t: Type} [decidable_linear_order t] {Γ Γ': cx t}:
   (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) ->
   (∀ (e: cx_elem t), e ∈ Γ.entries ↔ e ∈ Γ'.entries) :=
 begin
@@ -155,25 +155,11 @@ begin
   exact lookup_same_mem_entries_one h' e,
 end
 
-theorem cx_elem_lt_of_le_ne {t: Type} [has_le t] [has_lt t] (x y: cx_elem t):
-  x ≤ y -> x ≠ y -> x < y :=
-begin
-  sorry,
-end
-
-theorem cx_elem_lt_not_both {t: Type} [has_lt t] (x y: cx_elem t):
-  ¬ (x < y ∧ y < x) :=
-begin
-  sorry,
-end
-
-theorem lookup_same_eq_entries {t: Type} [has_le t] [has_lt t] {Γ Γ': cx t}:
+theorem lookup_same_eq_entries {t: Type} [decidable_linear_order t] {Γ Γ': cx t}:
   (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) -> Γ.entries = Γ'.entries :=
 begin
   intro h,
   exact sorted_ne_eq
-    cx_elem_lt_of_le_ne
-    cx_elem_lt_not_both
     (lookup_same_mem_entries h)
     (pairwise_implies ne_var_ne Γ.nodupkeys)
     (pairwise_implies ne_var_ne Γ'.nodupkeys)
@@ -181,14 +167,14 @@ begin
     Γ'.sorted,
 end
 
-theorem lookup_same {t: Type} [has_le t] [has_lt t] {Γ Γ': cx t}:
+theorem lookup_same {t: Type} [decidable_linear_order t] {Γ Γ': cx t}:
   (∀ (x: var), cx.lookup Γ x = cx.lookup Γ' x) -> Γ = Γ' :=
 begin
   intro h,
   exact entries_same_eq (lookup_same_eq_entries h),
 end
 
-theorem lookup_insert' {t: Type} [has_le t] (Γ: cx t) (x y: var) (v: t):
+theorem lookup_insert' {t: Type} [decidable_linear_order t] (Γ: cx t) (x y: var) (v: t):
   cx.lookup (cx.insert x v Γ) y = (if x = y then some v else cx.lookup Γ y) :=
 begin
   cases decidable.em (x = y),
@@ -198,7 +184,7 @@ begin
   exact useless_insert_ne Γ y x v (fun e, h (symm e)),
 end
 
-theorem useless_insert_twice {t: Type} [has_le t] [has_lt t]
+theorem useless_insert_twice {t: Type} [decidable_linear_order t]
   (Γ: cx t) (x: var) (v v': t):
   cx.insert x v (cx.insert x v' Γ) = cx.insert x v Γ :=
 lookup_same begin
@@ -211,7 +197,7 @@ lookup_same begin
   simp [h],
 end
 
-theorem insert_comm {t: Type} [has_le t] [has_lt t]
+theorem insert_comm {t: Type} [decidable_linear_order t]
   (Γ: cx t) (x y: var) (vx vy: t) (h: x ≠ y):
   cx.insert x vx (cx.insert y vy Γ) =
   cx.insert y vy (cx.insert x vx Γ) :=

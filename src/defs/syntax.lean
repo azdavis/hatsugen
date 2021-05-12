@@ -17,8 +17,7 @@ def typ_lt: typ -> typ -> Prop
 | (typ.arrow _ _) typ.int := false
 | (typ.arrow _ _) typ.bool := false
 
-instance: has_lt typ := has_lt.mk typ_lt
-instance: has_le typ := has_le.mk (fun a b, (a = b) ∨ (a < b))
+instance typ_decidable_linear_order: decidable_linear_order typ := sorry
 
 -- expressions
 inductive exp: Type

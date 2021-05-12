@@ -12,17 +12,6 @@ structure cx_elem (t: Type): Type :=
 def ne_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
   a.x ≠ b.x
 
-def le_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
-  a.x ≤ b.x
-
-def lt_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
-  a.x < b.x
-
-instance {t: Type} [has_le t]: has_le (cx_elem t) :=
-  has_le.mk le_var
-
-instance {t: Type} [has_lt t]: has_lt (cx_elem t) := has_lt.mk lt_var
-
 instance {t: Type}: is_symm (cx_elem t) ne_var := is_symm.mk
 begin
   intros a b ab,
@@ -30,35 +19,18 @@ begin
   exact ne.symm ab,
 end
 
-instance huh {t: Type} [has_le t]: @decidable_rel (cx_elem t) (≤) :=
-begin
-  intros a b,
-  exact nat.decidable_le a.x b.x,
-end
+instance cx_elem_decidable_linear_order {t: Type} [decidable_linear_order t]:
+  decidable_linear_order (cx_elem t) := sorry
 
-instance {t: Type} [has_le t]: is_trans (cx_elem t) (≤) := is_trans.mk
-begin
-  intros a b c ha hb,
-  simp [has_le.le] at *,
-  simp [le_var] at *,
-  exact is_trans.trans a.x b.x c.x ha hb,
-end
-
-instance {t: Type} [has_le t]: is_total (cx_elem t) (≤) := is_total.mk
-begin
-  intros a b,
-  exact linear_order.le_total a.x b.x,
-end
-
-structure cx (t: Type) [has_le t]: Type :=
+structure cx (t: Type) [decidable_linear_order t]: Type :=
   (entries: list (cx_elem t))
   (nodupkeys: pairwise ne_var entries)
   (sorted: sorted entries)
 
-def cx.empty {t: Type} [has_le t]: cx t :=
+def cx.empty {t: Type} [decidable_linear_order t]: cx t :=
   cx.mk [] (pairwise.nil ne_var) (pairwise.nil (≤))
 
-def cx.lookup {t: Type} [has_le t] (Γ: cx t) (x: var): option t :=
+def cx.lookup {t: Type} [decidable_linear_order t] (Γ: cx t) (x: var): option t :=
 begin
   cases Γ,
   induction Γ_entries,
@@ -74,7 +46,7 @@ begin
 end
 
 @[reducible]
-def cx.insert {t: Type} [has_le t] (x: var) (v: t) (Γ: cx t): cx t :=
+def cx.insert {t: Type} [decidable_linear_order t] (x: var) (v: t) (Γ: cx t): cx t :=
 begin
   cases Γ,
   let elem := cx_elem.mk x v,
@@ -89,7 +61,7 @@ begin
   exact cx.mk entries' nodupkeys' sorted',
 end
 
-instance {t: Type} [has_le t]: has_insert (prod var t) (cx t) :=
+instance {t: Type} [decidable_linear_order t]: has_insert (prod var t) (cx t) :=
   has_insert.mk begin
     intros a Γ,
     cases a,
