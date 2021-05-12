@@ -24,7 +24,7 @@ def cx_elem_lt {t: Type} [decidable_linear_order t] (a b: cx_elem t): Prop :=
   if a.x = b.x then a.v < b.v else a.x < b.x
 
 def cx_elem_le {t: Type} [decidable_linear_order t] (a b: cx_elem t): Prop :=
-  (a = b) ∨ (cx_elem_lt a b)
+  if a.x = b.x then a.v ≤ b.v else a.x ≤ b.x
 
 instance cx_elem_decidable_linear_order {t: Type} [decidable_linear_order t]:
 decidable_linear_order (cx_elem t) :=
@@ -38,19 +38,86 @@ begin
 end
 begin
   intros a b c ab bc,
-  sorry,
+  simp at *,
+  simp [cx_elem_le] at *,
+  cases decidable.em (a.x = b.x),
+  simp [h] at ab,
+  cases decidable.em (b.x = c.x),
+  simp [h_1] at bc,
+  rw h_1 at h,
+  simp [h],
+  exact le_trans ab bc,
+  simp [h_1] at bc,
+  rw symm h at h_1 bc,
+  simp [h_1],
+  exact bc,
+  simp [h] at ab,
+  cases decidable.em (b.x = c.x),
+  simp [h_1] at bc,
+  rw h_1 at h ab,
+  simp [h],
+  exact ab,
+  simp [h_1] at bc,
+  let ab' := lt_of_le_of_ne ab h,
+  let bc' := lt_of_le_of_ne bc h_1,
+  let ac := lt_trans ab' bc',
+  simp [ne_of_lt ac],
+  exact le_trans ab bc,
 end
 begin
   intros a b,
-  sorry,
+  simp,
+  simp [cx_elem_lt],
+  simp [cx_elem_le],
+  split,
+  intro ab,
+  cases decidable.em (a.x = b.x),
+  simp [h] at ab ⊢,
+  exact iff.elim_left lt_iff_le_not_le ab,
+  simp [h] at ab ⊢,
+  let h' := fun x, h (symm x),
+  simp [h'],
+  exact iff.elim_left lt_iff_le_not_le ab,
+  intro ab,
+  cases decidable.em (a.x = b.x),
+  simp [h] at ab ⊢,
+  exact iff.elim_right lt_iff_le_not_le ab,
+  simp [h] at ab ⊢,
+  let h' := fun x, h (symm x),
+  simp [h'] at ab,
+  exact iff.elim_right lt_iff_le_not_le ab,
 end
 begin
   intros a b ab ba,
-  sorry,
+  simp [(≤)] at ab ba,
+  simp [cx_elem_le] at ab ba,
+  cases a,
+  cases b,
+  simp at ab ba ⊢,
+  cases decidable.em (a_x = b_x),
+  simp [h] at ab ba,
+  let eq_v := le_antisymm ab ba,
+  split,
+  exact h,
+  exact eq_v,
+  simp [h] at ab,
+  let h' := fun x, h (symm x),
+  simp [h'] at ba,
+  exfalso,
+  exact h (le_antisymm ab ba),
 end
 begin
   intros a b,
-  sorry,
+  simp [(≤)],
+  simp [preorder.le],
+  simp [cx_elem_le],
+  cases decidable.em (a.x = b.x),
+  simp [h],
+  exact le_total a.v b.v,
+  simp [h],
+  let h' := fun x, h (symm x),
+  simp [h'],
+  exact le_total a.x b.x,
 end
 begin
   intros a b,
