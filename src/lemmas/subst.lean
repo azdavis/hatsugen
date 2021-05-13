@@ -35,7 +35,7 @@ end
 theorem weakening {Γ: cx typ} {e: exp} {τ: typ} (x: var) (τx: typ):
   x ∉ fv e ->
   has_typ Γ e τ ->
-  has_typ (cx.insert x τx Γ) e τ :=
+  has_typ (cx.insert Γ x τx) e τ :=
 begin
   intros fv_e et,
   induction et,
@@ -75,7 +75,7 @@ theorem subst_preservation
   {e ex: exp}
   {x: var}
   {τ τx: typ}
-  (Γ'_is: Γ' = cx.insert x τx Γ)
+  (Γ'_is: Γ' = cx.insert Γ x τx)
   (fv_ex: fv ex = [])
   (et: has_typ Γ' e τ)
   (ext: has_typ Γ ex τx)

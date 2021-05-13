@@ -168,7 +168,7 @@ begin
   ),
 end
 
-def cx.insert {t: Type} [decidable_linear_order t] (x: var) (v: t) (Γ: cx t): cx t :=
+def cx.insert {t: Type} [decidable_linear_order t] (Γ: cx t) (x: var) (v: t): cx t :=
 begin
   cases Γ,
   let elem := cx_elem.mk x v,

@@ -18,7 +18,7 @@ inductive has_typ: cx typ -> exp -> typ -> Prop
     has_typ Γ (exp.var x) τ
 | fn
     {Γ: cx typ} {x: var} {τ1 τ2: typ} {e: exp}:
-    has_typ (cx.insert x τ1 Γ) e τ2 ->
+    has_typ (cx.insert Γ x τ1) e τ2 ->
     has_typ Γ (exp.fn x τ1 e) (typ.arrow τ1 τ2)
 | app
     {Γ: cx typ} {e1 e2: exp} {τ1 τ2: typ}:

@@ -49,7 +49,7 @@ theorem lookup_mem_entries_ne {t: Type} [decidable_linear_order t]
   {Γ: cx t} {x y: var} {vx vy: t}:
   x ≠ y ->
   (cx_elem.mk x vx ∈ Γ.entries ↔
-  cx_elem.mk x vx ∈ (cx.insert y vy Γ).entries) :=
+  cx_elem.mk x vx ∈ (cx.insert Γ y vy).entries) :=
 begin
   intro xy_ne,
   let p := fun (a: cx_elem t), ¬y = a.x,
@@ -75,7 +75,7 @@ begin
 end
 
 theorem lookup_insert {t: Type} [decidable_linear_order t] (Γ: cx t) (x: var) (v: t):
-  cx.lookup (cx.insert x v Γ) x = some v :=
+  cx.lookup (cx.insert Γ x v) x = some v :=
 begin
   cases Γ,
   let elem := cx_elem.mk x v,
@@ -90,7 +90,7 @@ end
 
 theorem useless_insert_ne {t: Type} [decidable_linear_order t] (Γ: cx t) (x y: var) (v: t):
   x ≠ y ->
-  cx.lookup (cx.insert y v Γ) x =
+  cx.lookup (cx.insert Γ y v) x =
   cx.lookup Γ x :=
 begin
   intro h,
@@ -100,14 +100,14 @@ begin
     existsi vx,
     exact iff.elim_left lookup_mem_entries h,
   end,
-  let c: ∀ (vx: t), cx_elem.mk x vx ∉ (cx.insert y v Γ).entries := fun vx,
+  let c: ∀ (vx: t), cx_elem.mk x vx ∉ (cx.insert Γ y v).entries := fun vx,
     iff.elim_left (not_iff_not_of_iff (lookup_mem_entries_ne h)) (b vx),
   let d := fun vx, iff.elim_left (not_iff_not_of_iff lookup_mem_entries) (c vx),
   rw h_1,
   exact not_some_is_none d,
   cases h_1,
   let a := iff.elim_right lookup_mem_entries h_1_h,
-  let b: cx_elem.mk x h_1_w ∈ (cx.insert y v Γ).entries :=
+  let b: cx_elem.mk x h_1_w ∈ (cx.insert Γ y v).entries :=
     iff.elim_left (lookup_mem_entries_ne h) a,
   rw h_1_h,
   exact iff.elim_left lookup_mem_entries b,
@@ -175,7 +175,7 @@ begin
 end
 
 theorem lookup_insert' {t: Type} [decidable_linear_order t] (Γ: cx t) (x y: var) (v: t):
-  cx.lookup (cx.insert x v Γ) y = (if x = y then some v else cx.lookup Γ y) :=
+  cx.lookup (cx.insert Γ x v) y = (if x = y then some v else cx.lookup Γ y) :=
 begin
   by_cases x = y,
   simp [h],
@@ -186,10 +186,10 @@ end
 
 theorem useless_insert_twice {t: Type} [decidable_linear_order t]
   (Γ: cx t) (x: var) (v v': t):
-  cx.insert x v (cx.insert x v' Γ) = cx.insert x v Γ :=
+  cx.insert (cx.insert Γ x v') x v = cx.insert Γ x v :=
 lookup_same begin
   intro y,
-  rw lookup_insert' (cx.insert x v' Γ) x y v,
+  rw lookup_insert' (cx.insert Γ x v') x y v,
   rw lookup_insert' Γ x y v',
   rw lookup_insert' Γ x y v,
   by_cases x = y,
@@ -199,12 +199,12 @@ end
 
 theorem insert_comm {t: Type} [decidable_linear_order t]
   (Γ: cx t) (x y: var) (vx vy: t) (h: x ≠ y):
-  cx.insert x vx (cx.insert y vy Γ) =
-  cx.insert y vy (cx.insert x vx Γ) :=
+  cx.insert (cx.insert Γ y vy) x vx =
+  cx.insert (cx.insert Γ x vx) y vy :=
 lookup_same begin
   intro z,
-  rw lookup_insert' (cx.insert y vy Γ) x z vx,
-  rw lookup_insert' (cx.insert x vx Γ) y z vy,
+  rw lookup_insert' (cx.insert Γ y vy) x z vx,
+  rw lookup_insert' (cx.insert Γ x vx) y z vy,
   rw lookup_insert' Γ x z vx,
   rw lookup_insert' Γ y z vy,
   by_cases h_1: x = z,
