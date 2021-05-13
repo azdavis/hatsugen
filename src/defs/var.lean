@@ -121,12 +121,28 @@ begin
 end
 begin
   intros a b,
-  sorry,
+  simp [(≤)],
+  simp [preorder.le],
+  simp [partial_order.le],
+  simp [cx_elem_le],
+  by_cases a.x = b.x,
+  simp [h],
+  exact decidable_linear_order.decidable_le t a.v b.v,
+  simp [h],
+  exact nat.decidable_le a.x b.x,
 end
 (cx_elem.decidable_eq t)
 begin
   intros a b,
-  sorry,
+  simp [(<)],
+  simp [preorder.lt],
+  simp [partial_order.lt],
+  simp [cx_elem_lt],
+  by_cases a.x = b.x,
+  simp [h],
+  exact decidable_linear_order.decidable_lt t a.v b.v,
+  simp [h],
+  exact nat.decidable_lt a.x b.x,
 end
 
 structure cx (t: Type) [decidable_linear_order t]: Type :=
