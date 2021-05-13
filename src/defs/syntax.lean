@@ -14,8 +14,7 @@ def typ_lt: typ -> typ -> Prop
 | typ.bool typ.int := false
 | typ.bool _ := true
 | (typ.arrow a b) (typ.arrow c d) := if a = c then typ_lt b d else typ_lt a c
-| (typ.arrow _ _) typ.int := false
-| (typ.arrow _ _) typ.bool := false
+| (typ.arrow _ _) _ := false
 
 def typ_le (a b: typ): Prop := (a = b) ∨ (typ_lt a b)
 
