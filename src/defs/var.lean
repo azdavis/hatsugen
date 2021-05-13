@@ -10,7 +10,7 @@ structure cx_elem (t: Type): Type :=
   (x: var)
   (v: t)
 
-def ne_var {t: Type} (a: cx_elem t) (b: cx_elem t): Prop :=
+def ne_var {t: Type} (a b: cx_elem t): Prop :=
   a.x ≠ b.x
 
 instance {t: Type}: is_symm (cx_elem t) ne_var := is_symm.mk
