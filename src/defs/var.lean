@@ -183,10 +183,3 @@ begin
   let sorted' := insertion_sort_spec (elem :: list.filter p Γ_entries),
   exact cx.mk entries' nodupkeys' sorted',
 end
-
-instance {t: Type} [decidable_linear_order t]: has_insert (prod var t) (cx t) :=
-  has_insert.mk begin
-    intros a Γ,
-    cases a,
-    exact cx.insert a_fst a_snd Γ
-  end
