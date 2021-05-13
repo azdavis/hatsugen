@@ -27,7 +27,7 @@ begin
   simp [subst],
   -- super weird... at this point the lhs and rhs are equal so we should be
   -- done by refl but it doesn't work. but this does...?
-  cases decidable.em (x = y),
+  by_cases x = y,
   simp [h],
   simp [h],
 end
@@ -54,7 +54,7 @@ begin
   rw symm lookup_eq at et_a,
   exact has_typ.var et_a,
   rw fn_fv at fv_e,
-  cases decidable.em (x = et_x),
+  by_cases x = et_x,
   let a := useless_insert_twice et_Γ x et_τ1 τx,
   rw symm h at et_a ⊢,
   rw symm a at et_a,
@@ -90,7 +90,7 @@ begin
   let c := et_ih_a_2 Γ'_is ext,
   exact has_typ.if_ a b c,
   rw Γ'_is at et_a,
-  cases decidable.em (x = et_x),
+  by_cases x = et_x,
   rw h at et_a ⊢,
   rw lookup_insert Γ et_x τx at et_a,
   rw option.some.inj et_a at ext,
@@ -100,7 +100,7 @@ begin
   let h' := fun a, h (symm a),
   rw useless_insert_ne Γ et_x x τx h' at et_a,
   exact has_typ.var et_a,
-  cases decidable.em (x = et_x),
+  by_cases x = et_x,
   rw fn_subst,
   simp [h],
   rw Γ'_is at et_a,
@@ -136,7 +136,7 @@ begin
   rw symm (list.filter_append (fv e_a_1) (fv e_a_2)),
   rw symm (list.filter_append (fv e_a) (fv e_a_1 ++ fv e_a_2)),
   simp [subst, fv],
-  cases decidable.em (x = e),
+  by_cases x = e,
   rw h,
   simp [list.filter, subst, fv],
   exact fv_ex,
@@ -144,7 +144,7 @@ begin
   rw fn_subst,
   rw fn_fv,
   rw fn_fv,
-  cases decidable.em (x = e_a),
+  by_cases x = e_a,
   -- can't just `simp [h]` or else weird stuff happens with mismatched types
   rw h,
   simp,

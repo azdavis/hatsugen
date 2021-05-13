@@ -31,7 +31,7 @@ begin
   simp [cx.lookup] at h,
   exact h,
   simp [cx.lookup] at h,
-  cases decidable.em (x = Γ_entries_hd.x),
+  by_cases h_1: x = Γ_entries_hd.x,
   simp [h_1] at h,
   left,
   cases Γ_entries_hd,
@@ -177,7 +177,7 @@ end
 theorem lookup_insert' {t: Type} [decidable_linear_order t] (Γ: cx t) (x y: var) (v: t):
   cx.lookup (cx.insert x v Γ) y = (if x = y then some v else cx.lookup Γ y) :=
 begin
-  cases decidable.em (x = y),
+  by_cases x = y,
   simp [h],
   exact lookup_insert Γ y v,
   simp [h],
@@ -192,7 +192,7 @@ lookup_same begin
   rw lookup_insert' (cx.insert x v' Γ) x y v,
   rw lookup_insert' Γ x y v',
   rw lookup_insert' Γ x y v,
-  cases decidable.em (x = y),
+  by_cases x = y,
   simp [h],
   simp [h],
 end
@@ -207,15 +207,15 @@ lookup_same begin
   rw lookup_insert' (cx.insert x vx Γ) y z vy,
   rw lookup_insert' Γ x z vx,
   rw lookup_insert' Γ y z vy,
-  cases decidable.em (x = z),
-  cases decidable.em (y = z),
+  by_cases h_1: x = z,
+  by_cases h_2: y = z,
   rw symm h_2 at h_1,
   exfalso,
   exact h h_1,
   simp [h_1],
   simp [h_2],
   simp [h_1],
-  cases decidable.em (y = z),
+  by_cases h_2: y = z,
   simp [h_2],
   simp [h_2],
 end
