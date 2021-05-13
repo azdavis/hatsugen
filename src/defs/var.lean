@@ -168,7 +168,6 @@ begin
   ),
 end
 
-@[reducible]
 def cx.insert {t: Type} [decidable_linear_order t] (x: var) (v: t) (Γ: cx t): cx t :=
 begin
   cases Γ,
