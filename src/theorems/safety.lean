@@ -117,12 +117,11 @@ begin
   left,
   exact h,
   cases h,
-  let p := preservation fv_e et h_h,
   right,
   existsi h_w,
   split,
   exact h_h,
-  exact p,
+  exact preservation fv_e et h_h,
 end
 
 theorem uniqueness {Γ: cx typ} {e: exp} {τ τ': typ}:
