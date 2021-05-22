@@ -32,6 +32,21 @@ begin
   simp [h],
 end
 
+theorem prod_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e1 e2: exp):
+  subst ex x fv_ex (exp.prod e1 e2) =
+    exp.prod
+    (subst ex x fv_ex e1)
+    (subst ex x fv_ex e2)
+  := by simp [subst]
+
+theorem prod_left_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
+  subst ex x fv_ex (exp.prod_left e) = exp.prod_left (subst ex x fv_ex e)
+  := by simp [subst]
+
+theorem prod_right_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
+  subst ex x fv_ex (exp.prod_right e) = exp.prod_right (subst ex x fv_ex e)
+  := by simp [subst]
+
 theorem weakening {Γ: cx typ} {e: exp} {τ: typ} (x: var) (τx: typ):
   x ∉ fv e ->
   has_typ Γ e τ ->
@@ -67,6 +82,16 @@ begin
   let t_e1 := et_ih_a (fun a, fv_e (or.inl a)),
   let t_e2 := et_ih_a_1 (fun a, fv_e (or.inr a)),
   exact has_typ.app t_e1 t_e2,
+  exact has_typ.unit,
+  rw prod_fv at fv_e,
+  simp [list.append] at fv_e,
+  let t_e1 := et_ih_a (fun a, fv_e (or.inl a)),
+  let t_e2 := et_ih_a_1 (fun a, fv_e (or.inr a)),
+  exact has_typ.prod t_e1 t_e2,
+  rw prod_left_fv at fv_e,
+  exact has_typ.prod_left (et_ih fv_e),
+  rw prod_right_fv at fv_e,
+  exact has_typ.prod_right (et_ih fv_e),
 end
 
 theorem subst_preservation
@@ -116,6 +141,12 @@ begin
   let a := et_ih_a Γ'_is ext,
   let b := et_ih_a_1 Γ'_is ext,
   exact has_typ.app a b,
+  exact has_typ.unit,
+  let a := et_ih_a Γ'_is ext,
+  let b := et_ih_a_1 Γ'_is ext,
+  exact has_typ.prod a b,
+  exact has_typ.prod_left (et_ih Γ'_is ext),
+  exact has_typ.prod_right (et_ih Γ'_is ext),
 end
 
 theorem subst_fv (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
@@ -156,4 +187,16 @@ begin
   rw e_ih_a_1,
   rw symm (list.filter_append (fv e_a) (fv e_a_1)),
   rw symm (app_fv e_a e_a_1),
+  simp [subst],
+  simp [fv],
+  simp [prod_subst],
+  simp [prod_fv],
+  rw e_ih_a,
+  rw e_ih_a_1,
+  simp [prod_left_subst],
+  simp [prod_left_fv],
+  rw e_ih,
+  simp [prod_right_subst],
+  simp [prod_right_fv],
+  rw e_ih,
 end

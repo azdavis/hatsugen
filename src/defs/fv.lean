@@ -18,3 +18,11 @@ def fv (e: exp): list var :=
   (fun x _ _, list.filter (ne x))
   -- app
   (fun _ _ s1 s2, s1 ++ s2)
+  -- unit
+  []
+  -- prod
+  (fun _ _ s1 s2, s1 ++ s2)
+  -- prod_left
+  (fun _ s, s)
+  -- prod_right
+  (fun _ s, s)

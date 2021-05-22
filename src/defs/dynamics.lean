@@ -7,6 +7,8 @@ inductive val: exp -> Prop
 | true: val exp.true
 | false: val exp.false
 | fn (x: var) (τ: typ) (e: exp): val (exp.fn x τ e)
+| unit: val exp.unit
+| prod {e1 e2: exp}: val e1 -> val e2 -> val (exp.prod e1 e2)
 
 -- e ↦ e'
 inductive steps: exp -> exp -> Prop
@@ -33,3 +35,28 @@ inductive steps: exp -> exp -> Prop
     {x: var} {τ: typ} {e e2: exp} (fv_e2: fv e2 = []):
     val e2 ->
     steps (exp.app (exp.fn x τ e) e2) (subst e2 x fv_e2 e)
+| prod_e1
+    {e1 e2 e1': exp}:
+    steps e1 e1' ->
+    steps (exp.prod e1 e2) (exp.prod e1' e2)
+| prod_e2
+    {e1 e2 e2': exp}:
+    val e1 ->
+    steps e2 e2' ->
+    steps (exp.prod e1 e2) (exp.prod e1 e2')
+| prod_left_arg
+    {e e': exp}:
+    steps e e' ->
+    steps (exp.prod_left e) (exp.prod_left e')
+| prod_left_done
+    {e1 e2: exp}:
+    val (exp.prod e1 e2) ->
+    steps (exp.prod_left (exp.prod e1 e2)) e1
+| prod_right_arg
+    {e e': exp}:
+    steps e e' ->
+    steps (exp.prod_right e) (exp.prod_right e')
+| prod_right_done
+    {e1 e2: exp}:
+    val (exp.prod e1 e2) ->
+    steps (exp.prod_right (exp.prod e1 e2)) e2

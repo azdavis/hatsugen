@@ -18,3 +18,11 @@ def subst (ex: exp) (x: var) (_: fv ex = []) (e: exp): exp :=
   (fun y τ e e', exp.fn y τ (if x = y then e else e'))
   -- app
   (fun _ _, exp.app)
+  -- unit
+  exp.unit
+  -- prod
+  (fun _ _, exp.prod)
+  -- prod_left
+  (fun _, exp.prod_left)
+  -- prod_right
+  (fun _, exp.prod_right)

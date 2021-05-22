@@ -14,6 +14,8 @@ begin
   cases value,
   cases value,
   cases value,
+  cases value,
+  cases value,
 end
 
 theorem arrow_canonical_forms
@@ -26,5 +28,22 @@ begin
   cases value,
   existsi [et_x, et_e],
   refl,
+  cases value,
+  cases value,
+  cases value,
+end
+
+theorem prod_canonical_forms
+  {Γ: cx typ} {e: exp} {τ1 τ2: typ} (value: val e)
+  (et: has_typ Γ e (typ.prod τ1 τ2))
+  : ∃ (e1 e2: exp), e = exp.prod e1 e2 :=
+begin
+  cases et,
+  cases value,
+  cases value,
+  cases value,
+  existsi [et_e1, et_e2],
+  refl,
+  cases value,
   cases value,
 end
