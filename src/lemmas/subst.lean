@@ -47,6 +47,23 @@ theorem prod_right_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
   subst ex x fv_ex (exp.prod_right e) = exp.prod_right (subst ex x fv_ex e)
   := by simp [subst]
 
+theorem weakening_var_helper {Γ: cx typ} {x x': var} {τ1 τ2 τ: typ} {e: exp}:
+  has_typ (cx.insert Γ x' τ1) e τ2 ->
+  (x ∉ fv e -> has_typ (cx.insert (cx.insert Γ x' τ1) x τ) e τ2) ->
+  x ∉ list.filter (ne x') (fv e) ->
+  has_typ (cx.insert (cx.insert Γ x τ) x' τ1) e τ2 :=
+begin
+  intros et ih fv_e,
+  by_cases x = x',
+  let a := useless_insert_twice Γ x τ1 τ,
+  rw symm h at et ⊢,
+  rw symm a at et,
+  exact et,
+  let b := ih (not_filter fv_e (fun a, h (symm a))),
+  rw insert_comm Γ x x' τ τ1 h at b,
+  exact b,
+end
+
 theorem weakening {Γ: cx typ} {e: exp} {τ: typ} (x: var) (τx: typ):
   x ∉ fv e ->
   has_typ Γ e τ ->
@@ -65,18 +82,9 @@ begin
   exact has_typ.if_ t_e1 t_e2 t_e3,
   simp [fv] at fv_e,
   let var_ne := fun a, fv_e (symm a),
-  let hm := iff.elim_right (useless_insert_ne var_ne) et_a,
-  exact has_typ.var hm,
+  exact has_typ.var (iff.elim_right (useless_insert_ne var_ne) et_a),
   rw fn_fv at fv_e,
-  by_cases x = et_x,
-  let a := useless_insert_twice et_Γ x et_τ1 τx,
-  rw symm h at et_a ⊢,
-  rw symm a at et_a,
-  exact has_typ.fn et_a,
-  let b := not_filter fv_e (fun a, h (symm a)),
-  let c := et_ih b,
-  rw insert_comm et_Γ x et_x τx et_τ1 h at c,
-  exact has_typ.fn c,
+  exact has_typ.fn (weakening_var_helper et_a et_ih fv_e),
   rw app_fv at fv_e,
   simp [list.append] at fv_e,
   let t_e1 := et_ih_a (fun a, fv_e (or.inl a)),
