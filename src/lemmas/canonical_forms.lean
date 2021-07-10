@@ -11,11 +11,7 @@ begin
   refl,
   right,
   refl,
-  cases value,
-  cases value,
-  cases value,
-  cases value,
-  cases value,
+  repeat {cases value},
 end
 
 theorem arrow_canonical_forms
@@ -28,9 +24,7 @@ begin
   cases value,
   existsi [et_x, et_e],
   refl,
-  cases value,
-  cases value,
-  cases value,
+  repeat {cases value},
 end
 
 theorem prod_canonical_forms
@@ -44,6 +38,5 @@ begin
   cases value,
   existsi [et_e1, et_e2],
   refl,
-  cases value,
-  cases value,
+  repeat {cases value},
 end
