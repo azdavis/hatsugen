@@ -23,6 +23,6 @@ def fv (e: exp): list var :=
   -- prod
   (fun _ _ s1 s2, s1 ++ s2)
   -- prod_left
-  (fun _ s, s)
+  (fun _, id)
   -- prod_right
-  (fun _ s, s)
+  (fun _, id)
