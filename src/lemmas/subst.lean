@@ -192,9 +192,7 @@ begin
   simp [subst, var_fv],
   exact fv_ex,
   simp [fv, subst, h],
-  rw fn_subst,
-  rw fn_fv,
-  rw fn_fv,
+  simp [fn_subst, fn_fv],
   by_cases x = e_a,
   -- can't just `simp [h]` or else weird stuff happens with mismatched types
   rw h,
