@@ -171,6 +171,22 @@ begin
   exact has_typ.prod_right (et_ih Γ'_is ext),
 end
 
+theorem subst_fv_var_helper {x x': var} {ex e: exp} (fv_ex: fv ex = []):
+  fv (subst ex x fv_ex e) = list.filter (ne x) (fv e) ->
+  list.filter (ne x') (fv (ite (x = x') e (subst ex x fv_ex e))) =
+  list.filter (ne x) (list.filter (ne x') (fv e)) :=
+begin
+  intro ih,
+  by_cases x = x',
+  -- can't just `simp [h]` or else weird stuff happens with mismatched types
+  rw h,
+  simp,
+  exact symm (filter_idempotent (ne x') (fv e)),
+  simp [h],
+  simp [ih],
+  exact filter_comm (ne x') (ne x) (fv e),
+end
+
 theorem subst_fv (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
   fv (subst ex x fv_ex e) = list.filter (ne x) (fv e) :=
 begin
@@ -193,14 +209,7 @@ begin
   exact fv_ex,
   simp [fv, subst, h],
   simp [fn_subst, fn_fv],
-  by_cases x = e_a,
-  -- can't just `simp [h]` or else weird stuff happens with mismatched types
-  rw h,
-  simp,
-  exact symm (filter_idempotent (ne e_a) (fv e_a_2)),
-  simp [h],
-  simp [e_ih],
-  exact filter_comm (ne e_a) (ne x) (fv e_a_2),
+  exact subst_fv_var_helper fv_ex e_ih,
   rw app_subst ex x fv_ex e_a e_a_1,
   rw app_fv (s e_a) (s e_a_1),
   rw e_ih_a,
