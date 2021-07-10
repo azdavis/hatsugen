@@ -167,7 +167,7 @@ begin
   simp [subst, fv],
   by_cases x = e,
   rw h,
-  simp [list.filter, subst, fv],
+  simp [subst, var_fv],
   exact fv_ex,
   simp [fv, subst, h],
   rw fn_subst,
