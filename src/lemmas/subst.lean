@@ -102,6 +102,32 @@ begin
   exact has_typ.prod_right (et_ih fv_e),
 end
 
+theorem subst_preservation_var_helper
+  {Γ Γ': cx typ} {x x': var} {τ1 τ2 τx: typ}
+  {ex e: exp} (fv_ex: fv ex = []):
+  Γ' = cx.insert Γ x τx ->
+  has_typ (cx.insert Γ' x' τ1) e τ2 ->
+  has_typ Γ ex τx ->
+  (∀ {Γ : cx typ},
+    cx.insert Γ' x' τ1 = cx.insert Γ x τx →
+    has_typ Γ ex τx → has_typ Γ (subst ex x fv_ex e) τ2) ->
+  has_typ (cx.insert Γ x' τ1) (ite (x = x') e (subst ex x fv_ex e)) τ2 :=
+begin
+  intros Γ'_is et ext ih,
+  by_cases x = x',
+  simp [h],
+  rw Γ'_is at et,
+  rw h at et,
+  rw useless_insert_twice Γ x' τ1 τx at et,
+  exact et,
+  simp [h],
+  rw Γ'_is at ih,
+  let notin_fv_ex := list.not_mem_nil x',
+  rw symm fv_ex at notin_fv_ex,
+  let ext' := weakening x' τ1 notin_fv_ex ext,
+  exact ih (insert_comm Γ x' x τ1 τx (fun a, h (symm a))) ext',
+end
+
 theorem subst_preservation
   {Γ Γ': cx typ}
   {e ex: exp}
@@ -131,20 +157,8 @@ begin
   let h' := fun a, h (symm a),
   let hm := iff.elim_left (useless_insert_ne h') et_a,
   exact has_typ.var hm,
-  by_cases x = et_x,
   rw fn_subst,
-  simp [h],
-  rw Γ'_is at et_a,
-  rw h at et_a,
-  rw useless_insert_twice Γ et_x et_τ1 τx at et_a,
-  exact has_typ.fn et_a,
-  rw fn_subst,
-  simp [h],
-  rw Γ'_is at et_ih,
-  let notin_fv_ex := list.not_mem_nil et_x,
-  rw symm fv_ex at notin_fv_ex,
-  let ext' := weakening et_x et_τ1 notin_fv_ex ext,
-  let a := et_ih (insert_comm Γ et_x x et_τ1 τx (fun a, h (symm a))) ext',
+  let a := subst_preservation_var_helper fv_ex Γ'_is et_a ext @et_ih,
   exact has_typ.fn a,
   let a := et_ih_a Γ'_is ext,
   let b := et_ih_a_1 Γ'_is ext,
