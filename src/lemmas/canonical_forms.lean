@@ -33,9 +33,7 @@ theorem prod_canonical_forms
   : ∃ (e1 e2: exp), e = exp.prod e1 e2 :=
 begin
   cases et,
-  cases value,
-  cases value,
-  cases value,
+  repeat {cases value},
   existsi [et_e1, et_e2],
   refl,
   repeat {cases value},
