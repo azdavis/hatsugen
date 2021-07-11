@@ -9,6 +9,8 @@ inductive val: exp -> Prop
 | fn (x: var) (τ: typ) (e: exp): val (exp.fn x τ e)
 | unit: val exp.unit
 | prod {e1 e2: exp}: val e1 -> val e2 -> val (exp.prod e1 e2)
+| sum_left {τ: typ} {e: exp}: val e -> val (exp.sum_left τ e)
+| sum_right {τ: typ} {e: exp}: val e -> val (exp.sum_right τ e)
 
 -- e ↦ e'
 inductive steps: exp -> exp -> Prop
@@ -60,3 +62,27 @@ inductive steps: exp -> exp -> Prop
     {e1 e2: exp}:
     val (exp.prod e1 e2) ->
     steps (exp.prod_right (exp.prod e1 e2)) e2
+| sum_left_arg
+    {τ: typ} {e e': exp}:
+    steps e e' ->
+    steps (exp.sum_left τ e) (exp.sum_left τ e')
+| sum_right_arg
+    {τ: typ} {e e': exp}:
+    steps e e' ->
+    steps (exp.sum_right τ e) (exp.sum_right τ e')
+| case_never_arg
+    {τ: typ} {e e': exp}:
+    steps e e' ->
+    steps (exp.case_never τ e) (exp.case_never τ e')
+| case_arg
+    {eh eh' e1 e2: exp} {x1 x2: var}:
+    steps eh eh' ->
+    steps (exp.case eh x1 e1 x2 e2) (exp.case eh' x1 e1 x2 e2)
+| case_done_left
+    {τ: typ} {e e1 e2: exp} {x1 x2: var} (fv_e: fv e = []):
+    val (exp.sum_left τ e) ->
+    steps (exp.case (exp.sum_left τ e) x1 e1 x2 e2) (subst e x1 fv_e e1)
+| case_done_right
+    {τ: typ} {e e1 e2: exp} {x1 x2: var} (fv_e: fv e = []):
+    val (exp.sum_right τ e) ->
+    steps (exp.case (exp.sum_right τ e) x1 e1 x2 e2) (subst e x2 fv_e e2)

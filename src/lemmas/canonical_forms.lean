@@ -38,3 +38,27 @@ begin
   refl,
   repeat {cases value},
 end
+
+theorem never_canonical_forms
+  {Γ: cx typ} {e: exp} (value: val e)
+  (et: has_typ Γ e typ.never)
+  : false :=
+begin
+  cases et,
+  repeat {cases value},
+end
+
+theorem sum_canonical_forms
+  {Γ: cx typ} {e: exp} {τ1 τ2: typ} (value: val e)
+  (et: has_typ Γ e (typ.sum τ1 τ2))
+  : ∃ (e': exp), (e = exp.sum_left τ2 e') ∨ (e = exp.sum_right τ1 e') :=
+begin
+  cases et,
+  repeat {cases value},
+  existsi et_e,
+  left,
+  refl,
+  existsi et_e,
+  right,
+  refl,
+end

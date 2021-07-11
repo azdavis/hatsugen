@@ -30,6 +30,25 @@ theorem prod_right_fv (e: exp):
   fv (exp.prod_right e) = fv e
   := by simp [fv]
 
+theorem sum_left_fv {τ: typ} (e: exp):
+  fv (exp.sum_left τ e) = fv e
+  := by simp [fv]
+
+theorem sum_right_fv {τ: typ} (e: exp):
+  fv (exp.sum_right τ e) = fv e
+  := by simp [fv]
+
+theorem case_never_fv {τ: typ} (e: exp):
+  fv (exp.case_never τ e) = fv e
+  := by simp [fv]
+
+theorem case_fv (eh e1 e2: exp) (x1 x2: var):
+  fv (exp.case eh x1 e1 x2 e2) =
+    fv eh ++
+    list.filter (ne x1) (fv e1) ++
+    list.filter (ne x2) (fv e2)
+  := by simp [fv]
+
 theorem if_fv_empty
   (e1 e2 e3: exp)
   : fv (exp.if_ e1 e2 e3) = [] ↔ (fv e1 = [] ∧ fv e2 = [] ∧ fv e3 = []) :=

@@ -47,6 +47,40 @@ theorem prod_right_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
   subst ex x fv_ex (exp.prod_right e) = exp.prod_right (subst ex x fv_ex e)
   := by simp [subst]
 
+theorem sum_left_subst {τ: typ} (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
+  subst ex x fv_ex (exp.sum_left τ e) = exp.sum_left τ (subst ex x fv_ex e)
+  := by simp [subst]
+
+theorem sum_right_subst {τ: typ} (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
+  subst ex x fv_ex (exp.sum_right τ e) = exp.sum_right τ (subst ex x fv_ex e)
+  := by simp [subst]
+
+theorem case_never_subst {τ: typ} (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
+  subst ex x fv_ex (exp.case_never τ e) = exp.case_never τ (subst ex x fv_ex e)
+  := by simp [subst]
+
+theorem case_subst (ex: exp) (x: var) (fv_ex: fv ex = [])
+  (eh e1 e2: exp) (x1 x2: var):
+  subst ex x fv_ex (exp.case eh x1 e1 x2 e2) =
+  exp.case
+    (subst ex x fv_ex eh)
+    x1 (if x = x1 then e1 else subst ex x fv_ex e1)
+    x2 (if x = x2 then e2 else subst ex x fv_ex e2)
+   :=
+begin
+  simp [subst],
+  -- same as in fn_subst...?
+  by_cases h1: x = x1,
+  simp [h1],
+  by_cases h2: x1 = x2,
+  simp [h2],
+  simp [h2],
+  simp [h1],
+  by_cases h2: x = x2,
+  simp [h2],
+  simp [h2],
+end
+
 theorem weakening_var_helper {Γ: cx typ} {x x': var} {τ1 τ2 τ: typ} {e: exp}:
   has_typ (cx.insert Γ x' τ1) e τ2 ->
   (x ∉ fv e -> has_typ (cx.insert (cx.insert Γ x' τ1) x τ) e τ2) ->
@@ -100,6 +134,20 @@ begin
   exact has_typ.prod_left (et_ih fv_e),
   rw prod_right_fv at fv_e,
   exact has_typ.prod_right (et_ih fv_e),
+  rw sum_left_fv at fv_e,
+  exact has_typ.sum_left (et_ih fv_e),
+  rw sum_right_fv at fv_e,
+  exact has_typ.sum_right (et_ih fv_e),
+  rw case_never_fv at fv_e,
+  exact has_typ.case_never (et_ih fv_e),
+  rw case_fv at fv_e,
+  simp [list.append] at fv_e,
+  let t_eh := et_ih_a (fun a, fv_e (or.inl a)),
+  let fv_et_e1 := fun a, fv_e (or.inr (or.inl a)),
+  let t_e1 := weakening_var_helper et_a_1 et_ih_a_1 fv_et_e1,
+  let fv_et_e2 := fun a, fv_e (or.inr (or.inr a)),
+  let t_e2 := weakening_var_helper et_a_2 et_ih_a_2 fv_et_e2,
+  exact has_typ.case t_eh t_e1 t_e2,
 end
 
 theorem subst_preservation_var_helper
@@ -169,6 +217,13 @@ begin
   exact has_typ.prod a b,
   exact has_typ.prod_left (et_ih Γ'_is ext),
   exact has_typ.prod_right (et_ih Γ'_is ext),
+  exact has_typ.sum_left (et_ih Γ'_is ext),
+  exact has_typ.sum_right (et_ih Γ'_is ext),
+  exact has_typ.case_never (et_ih Γ'_is ext),
+  rw case_subst,
+  let t_e1 := subst_preservation_var_helper fv_ex Γ'_is et_a_1 ext @et_ih_a_1,
+  let t_e2 := subst_preservation_var_helper fv_ex Γ'_is et_a_2 ext @et_ih_a_2,
+  exact has_typ.case (et_ih_a Γ'_is ext) t_e1 t_e2,
 end
 
 theorem subst_fv_var_helper {x x': var} {ex e: exp} (fv_ex: fv ex = []):
@@ -225,4 +280,14 @@ begin
   rw e_ih,
   simp [prod_right_subst, prod_right_fv],
   rw e_ih,
+  simp [sum_left_subst, sum_left_fv],
+  rw e_ih,
+  simp [sum_right_subst, sum_right_fv],
+  rw e_ih,
+  simp [case_never_subst, case_never_fv],
+  rw e_ih,
+  simp [case_subst, case_fv],
+  rw e_ih_a,
+  rw subst_fv_var_helper fv_ex e_ih_a_1,
+  rw subst_fv_var_helper fv_ex e_ih_a_2,
 end

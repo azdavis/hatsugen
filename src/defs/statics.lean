@@ -39,3 +39,21 @@ inductive has_typ: cx typ -> exp -> typ -> Prop
     {Γ: cx typ} {e: exp} {τ1 τ2: typ}:
     has_typ Γ e (typ.prod τ1 τ2) ->
     has_typ Γ (exp.prod_right e) τ2
+| sum_left
+    {Γ: cx typ} {e: exp} {τ1 τ2: typ}:
+    has_typ Γ e τ1 ->
+    has_typ Γ (exp.sum_left τ2 e) (typ.sum τ1 τ2)
+| sum_right
+    {Γ: cx typ} {e: exp} {τ1 τ2: typ}:
+    has_typ Γ e τ2 ->
+    has_typ Γ (exp.sum_right τ1 e) (typ.sum τ1 τ2)
+| case_never
+    {Γ: cx typ} {e: exp} {τ: typ}:
+    has_typ Γ e typ.never ->
+    has_typ Γ (exp.case_never τ e) τ
+| case
+    {Γ: cx typ} {eh e1 e2: exp} {x1 x2: var} {τ1 τ2 τ: typ}:
+    has_typ Γ eh (typ.sum τ1 τ2) ->
+    has_typ (cx.insert Γ x1 τ1) e1 τ ->
+    has_typ (cx.insert Γ x2 τ2) e2 τ ->
+    has_typ Γ (exp.case eh x1 e1 x2 e2) τ

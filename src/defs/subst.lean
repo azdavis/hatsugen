@@ -26,3 +26,15 @@ def subst (ex: exp) (x: var) (_: fv ex = []) (e: exp): exp :=
   (fun _, exp.prod_left)
   -- prod_right
   (fun _, exp.prod_right)
+  -- sum_left
+  (fun τ _, exp.sum_left τ)
+  -- sum_right
+  (fun τ _, exp.sum_right τ)
+  -- case_never
+  (fun τ _, exp.case_never τ)
+  -- case
+  (fun eh x1 e1 x2 e2 eh' e1' e2',
+    exp.case eh'
+      x1 (if x = x1 then e1 else e1')
+      x2 (if x = x2 then e2 else e2')
+  )

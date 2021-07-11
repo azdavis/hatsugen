@@ -26,3 +26,12 @@ def fv (e: exp): list var :=
   (fun _, id)
   -- prod_right
   (fun _, id)
+  -- sum_left
+  (fun _ _, id)
+  -- sum_right
+  (fun _ _, id)
+  -- case_never
+  (fun _ _, id)
+  -- case
+  (fun _ x1 _ x2 _ sh s1 s2,
+    sh ++ (list.filter (ne x1) s1) ++ (list.filter (ne x2) s2))

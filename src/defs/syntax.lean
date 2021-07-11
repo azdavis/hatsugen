@@ -8,6 +8,8 @@ inductive typ: Type
 | arrow: typ -> typ -> typ
 | unit: typ
 | prod: typ -> typ -> typ
+| never: typ
+| sum: typ -> typ -> typ
 
 -- expressions
 inductive exp: Type
@@ -22,3 +24,7 @@ inductive exp: Type
 | prod: exp -> exp -> exp
 | prod_left: exp -> exp
 | prod_right: exp -> exp
+| sum_left: typ -> exp -> exp
+| sum_right: typ -> exp -> exp
+| case_never: typ -> exp -> exp
+| case: exp -> var -> exp -> var -> exp -> exp
