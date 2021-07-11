@@ -1,5 +1,5 @@
 theorem append_nil_both
-  {t: Type} (xs ys: list t): xs ++ ys = [] ↔ xs = [] ∧ ys = [] :=
+  {t: Type} {xs ys: list t}: xs ++ ys = [] ↔ xs = [] ∧ ys = [] :=
 begin
   split,
   intro h,
