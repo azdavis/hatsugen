@@ -155,7 +155,6 @@ begin
   rw h_h.left,
   exact has_typ.prod h_h.right.left a.left,
   exact iff.elim_right (prod_fv_empty st_e1 st_e2') (and.intro fv_e.left a.right),
-  --
   cases inversion_prod_left et,
   simp [prod_left_fv] at fv_e,
   let a := st_ih fv_e h,
@@ -173,7 +172,6 @@ begin
   simp [prod_left_fv] at fv_e,
   simp [prod_fv_empty] at fv_e,
   exact fv_e.left,
-  --
   cases inversion_prod_right et,
   simp [prod_right_fv] at fv_e,
   let a := st_ih fv_e h,
