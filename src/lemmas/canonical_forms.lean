@@ -27,10 +27,10 @@ begin
   repeat {cases value},
 end
 
-theorem prod_canonical_forms
+theorem pair_canonical_forms
   {Γ: cx typ} {e: exp} {τ1 τ2: typ} (value: val e)
-  (et: has_typ Γ e (typ.prod τ1 τ2))
-  : ∃ (e1 e2: exp), e = exp.prod e1 e2 :=
+  (et: has_typ Γ e (typ.pair τ1 τ2))
+  : ∃ (e1 e2: exp), e = exp.pair e1 e2 :=
 begin
   cases et,
   repeat {cases value},
@@ -48,10 +48,10 @@ begin
   repeat {cases value},
 end
 
-theorem sum_canonical_forms
+theorem either_canonical_forms
   {Γ: cx typ} {e: exp} {τ1 τ2: typ} (value: val e)
-  (et: has_typ Γ e (typ.sum τ1 τ2))
-  : ∃ (e': exp), (e = exp.sum_left τ2 e') ∨ (e = exp.sum_right τ1 e') :=
+  (et: has_typ Γ e (typ.either τ1 τ2))
+  : ∃ (e': exp), (e = exp.either_left τ2 e') ∨ (e = exp.either_right τ1 e') :=
 begin
   cases et,
   repeat {cases value},

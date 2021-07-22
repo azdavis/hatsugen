@@ -18,24 +18,24 @@ theorem fn_fv (x: var) (τ: typ) (e: exp):
   fv (exp.fn x τ e) = list.filter (ne x) (fv e)
   := by simp [fv]
 
-theorem prod_fv (e1 e2: exp):
-  fv (exp.prod e1 e2) = fv e1 ++ fv e2
+theorem pair_fv (e1 e2: exp):
+  fv (exp.pair e1 e2) = fv e1 ++ fv e2
   := by simp [fv]
 
-theorem prod_left_fv (e: exp):
-  fv (exp.prod_left e) = fv e
+theorem pair_left_fv (e: exp):
+  fv (exp.pair_left e) = fv e
   := by simp [fv]
 
-theorem prod_right_fv (e: exp):
-  fv (exp.prod_right e) = fv e
+theorem pair_right_fv (e: exp):
+  fv (exp.pair_right e) = fv e
   := by simp [fv]
 
-theorem sum_left_fv {τ: typ} (e: exp):
-  fv (exp.sum_left τ e) = fv e
+theorem either_left_fv {τ: typ} (e: exp):
+  fv (exp.either_left τ e) = fv e
   := by simp [fv]
 
-theorem sum_right_fv {τ: typ} (e: exp):
-  fv (exp.sum_right τ e) = fv e
+theorem either_right_fv {τ: typ} (e: exp):
+  fv (exp.either_right τ e) = fv e
   := by simp [fv]
 
 theorem case_never_fv {τ: typ} (e: exp):
@@ -86,17 +86,17 @@ begin
   simp [list.append],
 end
 
-theorem prod_fv_empty
+theorem pair_fv_empty
   (e1 e2: exp)
-  : fv (exp.prod e1 e2) = [] ↔ (fv e1 = [] ∧ fv e2 = []) :=
+  : fv (exp.pair e1 e2) = [] ↔ (fv e1 = [] ∧ fv e2 = []) :=
 begin
   split,
   intro h,
-  rw prod_fv e1 e2 at h,
+  rw pair_fv e1 e2 at h,
   exact iff.elim_left append_nil_both h,
   intro h,
   cases h,
-  rw prod_fv e1 e2 at *,
+  rw pair_fv e1 e2 at *,
   rw h_left,
   rw h_right,
   simp [list.append],

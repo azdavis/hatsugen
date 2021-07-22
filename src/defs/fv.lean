@@ -20,15 +20,15 @@ def fv (e: exp): list var :=
   (fun _ _ s1 s2, s1 ++ s2)
   -- unit
   []
-  -- prod
+  -- pair
   (fun _ _ s1 s2, s1 ++ s2)
-  -- prod_left
+  -- pair_left
   (fun _, id)
-  -- prod_right
+  -- pair_right
   (fun _, id)
-  -- sum_left
+  -- either_left
   (fun _ _, id)
-  -- sum_right
+  -- either_right
   (fun _ _, id)
   -- case_never
   (fun _ _, id)

@@ -20,16 +20,16 @@ def subst (ex: exp) (x: var) (_: fv ex = []) (e: exp): exp :=
   (fun _ _, exp.app)
   -- unit
   exp.unit
-  -- prod
-  (fun _ _, exp.prod)
-  -- prod_left
-  (fun _, exp.prod_left)
-  -- prod_right
-  (fun _, exp.prod_right)
-  -- sum_left
-  (fun τ _, exp.sum_left τ)
-  -- sum_right
-  (fun τ _, exp.sum_right τ)
+  -- pair
+  (fun _ _, exp.pair)
+  -- pair_left
+  (fun _, exp.pair_left)
+  -- pair_right
+  (fun _, exp.pair_right)
+  -- either_left
+  (fun τ _, exp.either_left τ)
+  -- either_right
+  (fun τ _, exp.either_right τ)
   -- case_never
   (fun τ _, exp.case_never τ)
   -- case

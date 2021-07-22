@@ -39,8 +39,8 @@ end
 
 theorem inversion_prod
   {Γ: cx typ} {e1 e2: exp} {τ: typ}
-  (et: has_typ Γ (exp.prod e1 e2) τ)
-  : ∃ (τ1 τ2: typ), τ = (typ.prod τ1 τ2) ∧ has_typ Γ e1 τ1 ∧ has_typ Γ e2 τ2 :=
+  (et: has_typ Γ (exp.pair e1 e2) τ)
+  : ∃ (τ1 τ2: typ), τ = (typ.pair τ1 τ2) ∧ has_typ Γ e1 τ1 ∧ has_typ Γ e2 τ2 :=
 begin
   cases et,
   existsi [et_τ1, et_τ2],
@@ -53,8 +53,8 @@ end
 
 theorem inversion_prod_left
   {Γ: cx typ} {e: exp} {τ1: typ}
-  (et: has_typ Γ (exp.prod_left e) τ1)
-  : ∃ (τ2: typ), has_typ Γ e (typ.prod τ1 τ2) :=
+  (et: has_typ Γ (exp.pair_left e) τ1)
+  : ∃ (τ2: typ), has_typ Γ e (typ.pair τ1 τ2) :=
 begin
   cases et,
   existsi et_τ2,
@@ -63,8 +63,8 @@ end
 
 theorem inversion_prod_right
   {Γ: cx typ} {e: exp} {τ2: typ}
-  (et: has_typ Γ (exp.prod_right e) τ2)
-  : ∃ (τ1: typ), has_typ Γ e (typ.prod τ1 τ2) :=
+  (et: has_typ Γ (exp.pair_right e) τ2)
+  : ∃ (τ1: typ), has_typ Γ e (typ.pair τ1 τ2) :=
 begin
   cases et,
   existsi et_τ1,
@@ -73,8 +73,8 @@ end
 
 theorem inversion_sum_left
   {Γ: cx typ} {e: exp} {τ2 τ: typ}
-  (et: has_typ Γ (exp.sum_left τ2 e) τ)
-  : ∃ (τ1: typ), τ = typ.sum τ1 τ2 ∧ has_typ Γ e τ1 :=
+  (et: has_typ Γ (exp.either_left τ2 e) τ)
+  : ∃ (τ1: typ), τ = typ.either τ1 τ2 ∧ has_typ Γ e τ1 :=
 begin
   cases et,
   existsi et_τ1,
@@ -85,8 +85,8 @@ end
 
 theorem inversion_sum_right
   {Γ: cx typ} {e: exp} {τ1 τ: typ}
-  (et: has_typ Γ (exp.sum_right τ1 e) τ)
-  : ∃ (τ2: typ), τ = typ.sum τ1 τ2 ∧ has_typ Γ e τ2 :=
+  (et: has_typ Γ (exp.either_right τ1 e) τ)
+  : ∃ (τ2: typ), τ = typ.either τ1 τ2 ∧ has_typ Γ e τ2 :=
 begin
   cases et,
   existsi et_τ2,
@@ -110,7 +110,7 @@ theorem inversion_case
   {Γ: cx typ} {eh e1 e2: exp} {x1 x2: var} {τ: typ}
   (et: has_typ Γ (exp.case eh x1 e1 x2 e2) τ)
   : ∃ (τ1 τ2: typ),
-    has_typ Γ eh (typ.sum τ1 τ2) ∧
+    has_typ Γ eh (typ.either τ1 τ2) ∧
     has_typ (cx.insert Γ x1 τ1) e1 τ ∧
     has_typ (cx.insert Γ x2 τ2) e2 τ :=
 begin

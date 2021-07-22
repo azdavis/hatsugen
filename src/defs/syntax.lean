@@ -7,9 +7,9 @@ inductive typ: Type
 | bool: typ
 | arrow: typ -> typ -> typ
 | unit: typ
-| prod: typ -> typ -> typ
+| pair: typ -> typ -> typ
 | never: typ
-| sum: typ -> typ -> typ
+| either: typ -> typ -> typ
 
 -- expressions
 inductive exp: Type
@@ -21,10 +21,10 @@ inductive exp: Type
 | fn: var -> typ -> exp -> exp
 | app: exp -> exp -> exp
 | unit: exp
-| prod: exp -> exp -> exp
-| prod_left: exp -> exp
-| prod_right: exp -> exp
-| sum_left: typ -> exp -> exp
-| sum_right: typ -> exp -> exp
+| pair: exp -> exp -> exp
+| pair_left: exp -> exp
+| pair_right: exp -> exp
+| either_left: typ -> exp -> exp
+| either_right: typ -> exp -> exp
 | case_never: typ -> exp -> exp
 | case: exp -> var -> exp -> var -> exp -> exp

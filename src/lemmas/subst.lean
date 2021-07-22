@@ -32,27 +32,27 @@ begin
   simp [h],
 end
 
-theorem prod_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e1 e2: exp):
-  subst ex x fv_ex (exp.prod e1 e2) =
-    exp.prod
+theorem pair_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e1 e2: exp):
+  subst ex x fv_ex (exp.pair e1 e2) =
+    exp.pair
     (subst ex x fv_ex e1)
     (subst ex x fv_ex e2)
   := by simp [subst]
 
-theorem prod_left_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
-  subst ex x fv_ex (exp.prod_left e) = exp.prod_left (subst ex x fv_ex e)
+theorem pair_left_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
+  subst ex x fv_ex (exp.pair_left e) = exp.pair_left (subst ex x fv_ex e)
   := by simp [subst]
 
-theorem prod_right_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
-  subst ex x fv_ex (exp.prod_right e) = exp.prod_right (subst ex x fv_ex e)
+theorem pair_right_subst (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
+  subst ex x fv_ex (exp.pair_right e) = exp.pair_right (subst ex x fv_ex e)
   := by simp [subst]
 
-theorem sum_left_subst {τ: typ} (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
-  subst ex x fv_ex (exp.sum_left τ e) = exp.sum_left τ (subst ex x fv_ex e)
+theorem either_left_subst {τ: typ} (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
+  subst ex x fv_ex (exp.either_left τ e) = exp.either_left τ (subst ex x fv_ex e)
   := by simp [subst]
 
-theorem sum_right_subst {τ: typ} (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
-  subst ex x fv_ex (exp.sum_right τ e) = exp.sum_right τ (subst ex x fv_ex e)
+theorem either_right_subst {τ: typ} (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
+  subst ex x fv_ex (exp.either_right τ e) = exp.either_right τ (subst ex x fv_ex e)
   := by simp [subst]
 
 theorem case_never_subst {τ: typ} (ex: exp) (x: var) (fv_ex: fv ex = []) (e: exp):
@@ -125,19 +125,19 @@ begin
   let t_e2 := et_ih_a_1 (fun a, fv_e (or.inr a)),
   exact has_typ.app t_e1 t_e2,
   exact has_typ.unit,
-  rw prod_fv at fv_e,
+  rw pair_fv at fv_e,
   simp [list.append] at fv_e,
   let t_e1 := et_ih_a (fun a, fv_e (or.inl a)),
   let t_e2 := et_ih_a_1 (fun a, fv_e (or.inr a)),
-  exact has_typ.prod t_e1 t_e2,
-  rw prod_left_fv at fv_e,
-  exact has_typ.prod_left (et_ih fv_e),
-  rw prod_right_fv at fv_e,
-  exact has_typ.prod_right (et_ih fv_e),
-  rw sum_left_fv at fv_e,
-  exact has_typ.sum_left (et_ih fv_e),
-  rw sum_right_fv at fv_e,
-  exact has_typ.sum_right (et_ih fv_e),
+  exact has_typ.pair t_e1 t_e2,
+  rw pair_left_fv at fv_e,
+  exact has_typ.pair_left (et_ih fv_e),
+  rw pair_right_fv at fv_e,
+  exact has_typ.pair_right (et_ih fv_e),
+  rw either_left_fv at fv_e,
+  exact has_typ.either_left (et_ih fv_e),
+  rw either_right_fv at fv_e,
+  exact has_typ.either_right (et_ih fv_e),
   rw case_never_fv at fv_e,
   exact has_typ.case_never (et_ih fv_e),
   rw case_fv at fv_e,
@@ -214,11 +214,11 @@ begin
   exact has_typ.unit,
   let a := et_ih_a Γ'_is ext,
   let b := et_ih_a_1 Γ'_is ext,
-  exact has_typ.prod a b,
-  exact has_typ.prod_left (et_ih Γ'_is ext),
-  exact has_typ.prod_right (et_ih Γ'_is ext),
-  exact has_typ.sum_left (et_ih Γ'_is ext),
-  exact has_typ.sum_right (et_ih Γ'_is ext),
+  exact has_typ.pair a b,
+  exact has_typ.pair_left (et_ih Γ'_is ext),
+  exact has_typ.pair_right (et_ih Γ'_is ext),
+  exact has_typ.either_left (et_ih Γ'_is ext),
+  exact has_typ.either_right (et_ih Γ'_is ext),
   exact has_typ.case_never (et_ih Γ'_is ext),
   rw case_subst,
   let t_e1 := subst_preservation_var_helper fv_ex Γ'_is et_a_1 ext @et_ih_a_1,
@@ -272,17 +272,17 @@ begin
   rw symm (list.filter_append (fv e_a) (fv e_a_1)),
   rw symm (app_fv e_a e_a_1),
   simp [subst, fv],
-  simp [prod_subst],
-  simp [prod_fv],
+  simp [pair_subst],
+  simp [pair_fv],
   rw e_ih_a,
   rw e_ih_a_1,
-  simp [prod_left_subst, prod_left_fv],
+  simp [pair_left_subst, pair_left_fv],
   rw e_ih,
-  simp [prod_right_subst, prod_right_fv],
+  simp [pair_right_subst, pair_right_fv],
   rw e_ih,
-  simp [sum_left_subst, sum_left_fv],
+  simp [either_left_subst, either_left_fv],
   rw e_ih,
-  simp [sum_right_subst, sum_right_fv],
+  simp [either_right_subst, either_right_fv],
   rw e_ih,
   simp [case_never_subst, case_never_fv],
   rw e_ih,
