@@ -2,7 +2,7 @@ import defs.dynamics
 import defs.statics
 
 theorem bool_canonical_forms
-  {Γ: cx typ} {e: exp} (value: val e)
+  {Γ: env} {e: exp} (value: val e)
   (et: has_typ Γ e typ.bool)
   : e = exp.true ∨ e = exp.false :=
 begin
@@ -15,7 +15,7 @@ begin
 end
 
 theorem arrow_canonical_forms
-  {Γ: cx typ} {e: exp} {τ1 τ2: typ} (value: val e)
+  {Γ: env} {e: exp} {τ1 τ2: typ} (value: val e)
   (et: has_typ Γ e (typ.arrow τ1 τ2))
   : ∃ (x: var) (e': exp), e = exp.fn x τ1 e' :=
 begin
@@ -28,7 +28,7 @@ begin
 end
 
 theorem pair_canonical_forms
-  {Γ: cx typ} {e: exp} {τ1 τ2: typ} (value: val e)
+  {Γ: env} {e: exp} {τ1 τ2: typ} (value: val e)
   (et: has_typ Γ e (typ.pair τ1 τ2))
   : ∃ (e1 e2: exp), e = exp.pair e1 e2 :=
 begin
@@ -40,7 +40,7 @@ begin
 end
 
 theorem never_canonical_forms
-  {Γ: cx typ} {e: exp} (value: val e)
+  {Γ: env} {e: exp} (value: val e)
   (et: has_typ Γ e typ.never)
   : false :=
 begin
@@ -49,7 +49,7 @@ begin
 end
 
 theorem either_canonical_forms
-  {Γ: cx typ} {e: exp} {τ1 τ2: typ} (value: val e)
+  {Γ: env} {e: exp} {τ1 τ2: typ} (value: val e)
   (et: has_typ Γ e (typ.either τ1 τ2))
   : ∃ (e': exp), (e = exp.either_left τ2 e') ∨ (e = exp.either_right τ1 e') :=
 begin

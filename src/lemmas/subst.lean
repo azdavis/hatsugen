@@ -81,27 +81,29 @@ begin
   simp [h2],
 end
 
-theorem weakening_var_helper {Γ: cx typ} {x x': var} {τ1 τ2 τ: typ} {e: exp}:
-  has_typ (cx.insert Γ x' τ1) e τ2 ->
-  (x ∉ fv e -> has_typ (cx.insert (cx.insert Γ x' τ1) x τ) e τ2) ->
+theorem weakening_var_helper {Γ: env} {x x': var} {τ1 τ2 τ: typ} {e: exp}:
+  has_typ (env.insert_exp Γ x' τ1) e τ2 ->
+  (x ∉ fv e -> has_typ (env.insert_exp (env.insert_exp Γ x' τ1) x τ) e τ2) ->
   x ∉ list.filter (ne x') (fv e) ->
-  has_typ (cx.insert (cx.insert Γ x τ) x' τ1) e τ2 :=
+  has_typ (env.insert_exp (env.insert_exp Γ x τ) x' τ1) e τ2 :=
 begin
   intros et ih fv_e,
   by_cases x = x',
-  let a := useless_insert_twice Γ x τ1 τ,
+  let a := useless_insert_twice Γ.exps x τ1 τ,
   rw symm h at et ⊢,
+  simp [env.insert_exp] at et,
   rw symm a at et,
   exact et,
   let b := ih (not_filter fv_e (fun a, h (symm a))),
-  rw insert_comm Γ x x' τ τ1 h at b,
+  simp [env.insert_exp] at b,
+  rw insert_comm Γ.exps x x' τ τ1 h at b,
   exact b,
 end
 
-theorem weakening {Γ: cx typ} {e: exp} {τ: typ} (x: var) (τx: typ):
+theorem weakening {Γ: env} {e: exp} {τ: typ} (x: var) (τx: typ):
   x ∉ fv e ->
   has_typ Γ e τ ->
-  has_typ (cx.insert Γ x τx) e τ :=
+  has_typ (env.insert_exp Γ x τx) e τ :=
 begin
   intros fv_e et,
   induction et,
@@ -151,37 +153,40 @@ begin
 end
 
 theorem subst_preservation_var_helper
-  {Γ Γ': cx typ} {x x': var} {τ1 τ2 τx: typ}
+  {Γ Γ': env} {x x': var} {τ1 τ2 τx: typ}
   {ex e: exp} (fv_ex: fv ex = []):
-  Γ' = cx.insert Γ x τx ->
-  has_typ (cx.insert Γ' x' τ1) e τ2 ->
+  Γ' = env.insert_exp Γ x τx ->
+  has_typ (env.insert_exp Γ' x' τ1) e τ2 ->
   has_typ Γ ex τx ->
-  (∀ {Γ : cx typ},
-    cx.insert Γ' x' τ1 = cx.insert Γ x τx →
+  (∀ {Γ : env},
+    env.insert_exp Γ' x' τ1 = env.insert_exp Γ x τx →
     has_typ Γ ex τx → has_typ Γ (subst ex x fv_ex e) τ2) ->
-  has_typ (cx.insert Γ x' τ1) (ite (x = x') e (subst ex x fv_ex e)) τ2 :=
+  has_typ (env.insert_exp Γ x' τ1) (ite (x = x') e (subst ex x fv_ex e)) τ2 :=
 begin
   intros Γ'_is et ext ih,
   by_cases x = x',
   simp [h],
   rw Γ'_is at et,
   rw h at et,
-  rw useless_insert_twice Γ x' τ1 τx at et,
+  simp [env.insert_exp] at et,
+  rw useless_insert_twice Γ.exps x' τ1 τx at et,
   exact et,
   simp [h],
   rw Γ'_is at ih,
   let notin_fv_ex := list.not_mem_nil x',
   rw symm fv_ex at notin_fv_ex,
   let ext' := weakening x' τ1 notin_fv_ex ext,
-  exact ih (insert_comm Γ x' x τ1 τx (fun a, h (symm a))) ext',
+  simp [env.insert_exp] at ih,
+  let hm := insert_comm Γ.exps x' x τ1 τx (fun a, h (symm a)),
+  exact @ih (env.insert_exp Γ x' τ1) hm ext',
 end
 
 theorem subst_preservation
-  {Γ Γ': cx typ}
+  {Γ Γ': env}
   {e ex: exp}
   {x: var}
   {τ τx: typ}
-  (Γ'_is: Γ' = cx.insert Γ x τx)
+  (Γ'_is: Γ' = env.insert_exp Γ x τx)
   (fv_ex: fv ex = [])
   (et: has_typ Γ' e τ)
   (ext: has_typ Γ ex τx)
@@ -198,7 +203,7 @@ begin
   rw Γ'_is at et_a,
   by_cases x = et_x,
   rw h at et_a ⊢,
-  rw lookup_uniq (lookup_insert Γ et_x τx) et_a at ext,
+  rw lookup_uniq (lookup_insert Γ.exps et_x τx) et_a at ext,
   simp [subst],
   exact ext,
   simp [subst, h],

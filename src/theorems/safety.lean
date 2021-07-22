@@ -4,7 +4,7 @@ import lemmas.subst
 import lemmas.inversion
 
 theorem progress
-  {Γ: cx typ}
+  {Γ: env}
   {e: exp}
   {τ: typ}
   (fv_e: fv e = [])
@@ -136,7 +136,7 @@ begin
 end
 
 theorem preservation
-  {Γ: cx typ}
+  {Γ: env}
   {e e': exp}
   {τ: typ}
   (fv_e: fv e = [])
@@ -291,7 +291,7 @@ end
 
 -- the big one
 theorem safety
-  {Γ: cx typ}
+  {Γ: env}
   {e: exp}
   {τ: typ}
   (fv_e: fv e = [])
@@ -309,7 +309,7 @@ begin
   exact preservation fv_e et h_h,
 end
 
-theorem uniqueness {Γ: cx typ} {e: exp} {τ τ': typ}:
+theorem uniqueness {Γ: env} {e: exp} {τ τ': typ}:
   has_typ Γ e τ ->
   has_typ Γ e τ' ->
   τ = τ' :=
