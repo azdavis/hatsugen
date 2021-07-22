@@ -17,11 +17,11 @@ def fv (e: exp): list var :=
   -- fn
   (fun x _ _, list.filter (ne x))
   -- app
-  (fun _ _ s1 s2, s1 ++ s2)
+  (fun _ _, (++))
   -- unit
   []
   -- pair
-  (fun _ _ s1 s2, s1 ++ s2)
+  (fun _ _, (++))
   -- pair_left
   (fun _, id)
   -- pair_right
