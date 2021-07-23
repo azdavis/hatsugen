@@ -177,8 +177,8 @@ begin
   rw symm fv_ex at notin_fv_ex,
   let ext' := weakening x' τ1 notin_fv_ex ext,
   simp [env.insert_exp] at ih,
-  let hm := insert_comm Γ.exps x' x τ1 τx (fun a, h (symm a)),
-  exact @ih (env.insert_exp Γ x' τ1) hm ext',
+  let a := insert_comm Γ.exps x' x τ1 τx (fun a, h (symm a)),
+  exact @ih (env.insert_exp Γ x' τ1) a ext',
 end
 
 theorem subst_preservation
