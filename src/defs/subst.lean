@@ -32,7 +32,7 @@ def subst (ex: exp) (x: var) (_: fv ex = []) (e: exp): exp :=
   -- case_never
   (fun τ _, exp.case_never τ)
   -- case
-  (fun eh x1 e1 x2 e2 eh' e1' e2',
+  (fun _ x1 e1 x2 e2 eh' e1' e2',
     exp.case eh'
       x1 (if x = x1 then e1 else e1')
       x2 (if x = x2 then e2 else e2')
