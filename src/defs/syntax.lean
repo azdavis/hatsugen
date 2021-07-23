@@ -1,6 +1,5 @@
 import defs.var
 
--- types
 @[derive decidable_eq]
 inductive typ: Type
 | int: typ
@@ -11,7 +10,6 @@ inductive typ: Type
 | never: typ
 | either: typ -> typ -> typ
 
--- expressions
 inductive exp: Type
 | int: ℤ -> exp
 | true: exp

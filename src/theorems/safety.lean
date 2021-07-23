@@ -289,7 +289,6 @@ begin
   exact (iff.elim_left append_nil_both a.right).right,
 end
 
--- the big one
 theorem safety
   {Γ: env}
   {e: exp}

@@ -9,7 +9,6 @@ def env.insert_exp (Γ: env) (x: var) (τ: typ): env :=
 def env.lookup_exp (Γ: env) (x: var) (τ: typ): Prop :=
   cx.lookup Γ.exps x τ
 
--- Γ ⊢ e : τ
 inductive has_typ: env -> exp -> typ -> Prop
 | int {Γ: env} {n: ℤ}: has_typ Γ (exp.int n) typ.int
 | true {Γ: env}: has_typ Γ exp.true typ.bool

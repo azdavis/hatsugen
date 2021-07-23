@@ -1,7 +1,6 @@
 import defs.syntax
 import defs.var
 
--- free variables
 def fv (e: exp): list var :=
   exp.rec_on e
   -- int

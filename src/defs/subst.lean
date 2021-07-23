@@ -1,7 +1,6 @@
 import defs.syntax
 import defs.fv
 
--- substitution
 def subst (ex: exp) (x: var) (_: fv ex = []) (e: exp): exp :=
   exp.rec_on e
   -- int

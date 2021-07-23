@@ -1,7 +1,6 @@
 import util.list.filter
 import util.list.sort
 
--- variables. any type with infinite values and a well-behaved ≤ would work
 @[reducible]
 def var: Type := ℕ
 

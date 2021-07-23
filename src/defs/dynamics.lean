@@ -1,7 +1,6 @@
 import defs.syntax
 import defs.subst
 
--- e val
 inductive val: exp -> Prop
 | int (n: ℤ): val (exp.int n)
 | true: val exp.true
@@ -12,7 +11,6 @@ inductive val: exp -> Prop
 | either_left {τ: typ} {e: exp}: val e -> val (exp.either_left τ e)
 | either_right {τ: typ} {e: exp}: val e -> val (exp.either_right τ e)
 
--- e ↦ e'
 inductive steps: exp -> exp -> Prop
 | if_e1
     {e1 e2 e3 e1': exp}:
