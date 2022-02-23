@@ -1,7 +1,7 @@
 # Hatsugen
 
-A small programming language being formally defined with a series of blog posts
-and [Lean][1] code.
+A small programming language formally defined with a series of blog posts and
+[Lean][1] code.
 
 ## Note about the Lean version
 
